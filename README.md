@@ -5,7 +5,7 @@ ocas - plural of oca, a edible tuber of Oxalis tuberosa,a wood sorrel of the And
 or maybe it's an acronym OCAS - OpenC2 API Simulator.
 
 Ocas is an OTP application written in erlang to:
-- prove out the OpenC2 spec (see blah blah X)
+- prove out the OpenC2 spec (see http://openc2.org/ and https://github.com/OpenC2-org/)
 - be a viable simulator for testing OpenC2 code and scenarios
 - be a template for developing actual openc2 applications (ie replace the simulator code with code to actually perform the real function)
 
