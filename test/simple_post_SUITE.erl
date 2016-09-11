@@ -34,7 +34,6 @@
 %% tests to run
 all() ->
     [ test_post
-    , to_do
     ].
 
 %% timeout if no reply in a minute
@@ -68,7 +67,3 @@ test_post(_Config) ->
 
     ok.
 
-to_do(_Config) ->
-    {ok, 'cowlib/src/cow_multipart.erl:392: Warning: crypto:rand_bytes/1 is deprecated and will be removed in a future release; use crypto:strong_rand_bytes/1' } = 'cowlib/src/cow_multipart.erl:392: Warning: crypto:rand_bytes/1 is deprecated and will be removed in a future release; use crypto:strong_rand_bytes/1',
-
-    ok.
