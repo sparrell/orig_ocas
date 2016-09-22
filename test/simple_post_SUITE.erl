@@ -57,7 +57,7 @@ test_post(_Config) ->
                 },
     Body = jsx:encode(SomeData),
     Options = #{},
-    {ok, Response} = shotgun:post(Conn, "/sFractal", Headers, Body, Options),
+    {ok, Response} = shotgun:post(Conn, "/v0/openc2", Headers, Body, Options),
     #{ status_code := 201, headers := RespHeaders } = Response,
     %% test header contents are correct
     { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
