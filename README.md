@@ -56,3 +56,11 @@ Examples
 -----
 
 put stuff here
+
+Vision
+-----
+The vision is to have this code running on a cloud server, with a protected interface, that could be used for interworking testing. See TBD for the glue to do this.
+
+Another vision is for this code be forked and 'filled in' as actual working implementations.
+See TBD for one example.
+put stuff here
