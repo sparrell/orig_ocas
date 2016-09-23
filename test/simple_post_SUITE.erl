@@ -50,6 +50,7 @@ init_per_suite(Config) ->
 
 test_post(_Config) ->
     MyPort = application:get_env(ocas, port, 8080),
+    lager:debug("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
     Headers = [ {<<"content-type">>,<<"application/json">>} ],
     SomeData = #{ fractalAlg => julian
