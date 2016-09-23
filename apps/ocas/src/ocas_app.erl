@@ -28,19 +28,33 @@
 -behaviour(application).
 
 %% Application callbacks
--export([start/2, stop/1]).
+-export([start/0, start/2, stop/1]).
 
 %%====================================================================
 %% API
 %%====================================================================
 
+-spec start(_, _) -> {'ok', pid() }.
 start(_StartType, _StartArgs) ->
-    ocas_sup:start_link().
+    lager:info("starting supervisor"),
+    ocas_sup:start_link(),
+    lager:info("starting webserver"),
+    WebServerReturn = start_webserver(),
+    {ok, WebServerReturn}.
+
+-spec start() -> {'error', {atom(), _}} | {'ok', [atom()]}.
+start() ->
+  application:ensure_all_started(ocas).
 
 %%--------------------------------------------------------------------
+-spec stop(_) -> 'ok'.
 stop(_State) ->
     ok.
 
 %%====================================================================
 %% Internal functions
 %%====================================================================
+-spec start_webserver() -> pid().
+start_webserver() ->
+  lager:info("starting cowboy"),
+  self().
