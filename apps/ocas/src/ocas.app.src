@@ -21,11 +21,24 @@
   {registered, []},
   {mod, { ocas_app, []}},
   {applications,
-   [kernel,
-    stdlib
+   [ kernel
+   , stdlib
+   , cowboy
+   , lager
    ]},
+  {deps, [ jsx
+         ]},
   {env,[]},
   {modules, []},
+
+  {profiles, [
+           {test, [{deps, [ meck
+                          %% , eper %% for debugging
+                          %% , recon %% for debugging
+                          ]}
+                  ]}
+           ]
+  },
 
   {maintainers, [sparrell]},
   {licenses, [apache2]},

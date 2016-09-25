@@ -33,12 +33,13 @@
 %% Supervisor callbacks
 -export([init/1]).
 
--define(SERVER, ?MODULE).
+-define(SERVER, ?MODULE).    % macro defining "SERVER" to contain the name of this module
 
 %%====================================================================
 %% API functions
 %%====================================================================
 
+-spec start_link() -> 'ignore' | {'error', _} | {'ok', pid()}.
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
@@ -47,6 +48,7 @@ start_link() ->
 %%====================================================================
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
+-spec init([]) -> {'ok', {#{}, [#{}, ...]}}.
 init([]) ->
     {ok, { {one_for_all, 0, 1}, []} }.
 
