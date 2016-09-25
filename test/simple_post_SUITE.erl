@@ -42,15 +42,25 @@ suite() ->
 
 %% setup config parameters
 init_per_suite(Config) ->
-    {ok, _AppList} = application:ensure_all_started(shotgun),
-    {ok, _AppList2} = application:ensure_all_started(ocas),
+    {ok, AppList} = application:ensure_all_started(lager),
+    lager:info("AppList: ~p~n", [AppList]),
 
+    {ok, AppList2} = application:ensure_all_started(shotgun),
+    lager:info("AppList2: ~p~n", [AppList2]),
+
+    %% since ct doesn't read sys.config, set configs here
+    application:set_env(ocas, port, 8080),
+    application:set_env(ocas, listener_count, 5),
+
+    %% start application
+    {ok, AppList3} = application:ensure_all_started(ocas),
+    lager:info("AppList3: ~p~n", [AppList3]),
 
     Config.
 
 test_post(_Config) ->
     MyPort = application:get_env(ocas, port, 8080),
-    lager:debug("test_post:port= ~p", [MyPort]),
+    lager:info("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
     Headers = [ {<<"content-type">>,<<"application/json">>} ],
     SomeData = #{ fractalAlg => julian
@@ -58,7 +68,7 @@ test_post(_Config) ->
                 },
     Body = jsx:encode(SomeData),
     Options = #{},
-    {ok, Response} = shotgun:post(Conn, "/v0/openc2", Headers, Body, Options),
+    {ok, Response} = shotgun:post(Conn, "/status", Headers, Body, Options),
     #{ status_code := 201, headers := RespHeaders } = Response,
     %% test header contents are correct
     { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),

@@ -36,10 +36,28 @@
 
 -spec start(_, _) -> {'ok', pid() }.
 start(_StartType, _StartArgs) ->
+
+    %% log pid of this
+    lager:info("self pid: ~p~n", [self()]),
+
+    %% log what apps running
+    Apps = application:which_applications(),
+    lager:info("apps: ~p~n", [Apps]),
+
+    %% start supervisor
     lager:info("starting supervisor"),
     ocas_sup:start_link(),
+
+    %% start webserver
     lager:info("starting webserver"),
     WebServerReturn = start_webserver(),
+
+    %% log some info
+    lager:info("webserver return: ~p~n", [WebServerReturn]),
+    AppEnv = application:get_all_env(),
+    lager:info("env: ~p~n", [AppEnv]),
+
+    %% return
     {ok, WebServerReturn}.
 
 -spec start() -> {'error', {atom(), _}} | {'ok', [atom()]}.
@@ -56,5 +74,34 @@ stop(_State) ->
 %%====================================================================
 -spec start_webserver() -> pid().
 start_webserver() ->
-  lager:info("starting cowboy"),
+  %% which port to listen to
+  {ok, Port} = application:get_env(port),
+  lager:info("starting cowboy on port: ~p~n", [Port]),
+
+  %% how many parallel listeners
+  {ok, ListenerCount} = application:get_env(listener_count), 
+  lager:info("starting ~p listeners~n", [ListenerCount]),
+
+  %% setup routes
+  Routes = 
+    [
+      {
+        '_'  %virtual hostname (any host name)
+      , [ 
+          {"/status", status_handler, []}  % not sure if need a status independent of json handling
+        , {"/openc2", openc2_handler, []}    % handles the meat of openc2
+        ]
+      }
+    ],
+  Dispatch = cowboy_router:compile(Routes),
+
+  %% start cowboy
+  {ok, CowboyReturn} = cowboy:start_http( http
+                             , ListenerCount
+                             , [{port, Port}]
+                             , [{env, [{dispatch, Dispatch}]}]
+                             ),
+  lager:info("Cowboy started returned: ~p", [CowboyReturn] ),
+
+  %% return
   self().

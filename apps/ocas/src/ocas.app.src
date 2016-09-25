@@ -23,10 +23,10 @@
   {applications,
    [ kernel
    , stdlib
+   , cowboy
+   , lager
    ]},
-  {deps, [ cowboy
-         , jsx
-         , lager
+  {deps, [ jsx
          ]},
   {env,[]},
   {modules, []},
