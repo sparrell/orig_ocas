@@ -36,7 +36,7 @@
 %%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %%%-------------------------------------------------------------------
 
--export([init/3, rest_init/2, to_html/2]).
+-export([init/3, rest_init/2, to_html/2, allowed_methods/2]).
 
 init( {tcp, http}, _Req, _Opts) ->
     {upgrade, protocol, cowboy_rest}.
@@ -44,8 +44,12 @@ init( {tcp, http}, _Req, _Opts) ->
 rest_init(Req, _Opts) ->
     {Method, Req1} = cowboy_req:method(Req),
     {URL, Req2} = cowboy_req:url(Req1),
-    lager:debug("~s ~s", [Method, URL]),
+    lager:info("~s ~s", [Method, URL]),
     {ok, Req2, #{}}.
+
+%% allow only GET
+allowed_methods(Req, State) ->
+    {[<<"GET">>], Req, State}.
 
 to_html(Req, State) ->
     Body = <<"<html><body>Status Works - needs more later</body></html>">>,

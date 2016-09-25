@@ -33,7 +33,8 @@
 
 %% tests to run
 all() ->
-    [ test_post
+    [ test_get_status
+    , test_post
     ].
 
 %% timeout if no reply in a minute
@@ -57,6 +58,41 @@ init_per_suite(Config) ->
     lager:info("AppList3: ~p~n", [AppList3]),
 
     Config.
+
+test_get_status(_Config) ->
+    MyPort = application:get_env(ocas, port, 8080),
+    lager:info("test_post:port= ~p", [MyPort]),
+    {ok, Conn} = shotgun:open("localhost", MyPort),
+    lager:info("connection = ~p", [Conn]),
+    Headers = [ {<<"content-type">>,<<"application/text">>} ],
+    Options = #{},
+    ResponseToGet = shotgun:get(Conn, "/status", Headers, Options),
+    lager:info("response = ~p", [ResponseToGet]),
+    {ok, Response} = ResponseToGet,
+
+    %% breakout the status, headers, body
+    #{ status_code := RespStatus, headers := RespHeaders, body := RespBody } = Response,
+    lager:info("status = ~p", [RespStatus]),
+    lager:info("headers = ~p", [RespHeaders]),
+    lager:info("body = ~p", [RespBody]),
+
+    %% valididate response code is 200 (ok) (can get 201 also?)
+    200 = RespStatus,
+
+    %% valididate response code is 200 (ok) and breakout the headers, body
+    %%#{ status_code := 201, headers := RespHeaders, body := RespBody } = Response,
+
+    %% test header contents are correct
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
+    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
+    { <<"content-length">>, <<"57">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
+
+    %% valididate body content
+    <<"<html><body>Status Works - needs more later</body></html>">> = RespBody,
+
+    ok.
+
 
 test_post(_Config) ->
     MyPort = application:get_env(ocas, port, 8080),
