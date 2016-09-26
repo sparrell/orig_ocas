@@ -79,9 +79,6 @@ test_get_status(_Config) ->
     %% valididate response code is 200 (ok) (can get 201 also?)
     200 = RespStatus,
 
-    %% valididate response code is 200 (ok) and breakout the headers, body
-    %%#{ status_code := 201, headers := RespHeaders, body := RespBody } = Response,
-
     %% test header contents are correct
     { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
@@ -99,13 +96,33 @@ test_post(_Config) ->
     lager:info("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
     Headers = [ {<<"content-type">>,<<"application/json">>} ],
-    SomeData = #{ fractalAlg => julian
-                , colorAlg => simplest
-                },
-    Body = jsx:encode(SomeData),
+
+    SomeJson = <<"{\"action\": \"mitigate\",
+                   \"target\": {
+                      \"type\":\"cybox:Hostname\",
+                      \"specifiers\":{\"Hostname_Value\":\"cdn.badco.org\"}}}">>,
+    %% validate Json
+    true = jsx:is_json(SomeJson),
+
+    Body = SomeJson,
     Options = #{},
-    {ok, Response} = shotgun:post(Conn, "/status", Headers, Body, Options),
-    #{ status_code := 201, headers := RespHeaders } = Response,
+
+    %% send json command to openc2
+    lager:info("about to send json to openc2"),
+    {ok, Response} = shotgun:post(Conn, "/openc2", Headers, Body, Options),
+    lager:info("sent json, got: ~p", [Response] ),
+
+    %% breakout the status, headers, body; log; validate
+    #{ status_code := RespStatus } = Response,
+    lager:info("status = ~p", [RespStatus]),
+    #{ headers := RespHeaders} = Response,
+    lager:info("headers = ~p", [RespHeaders]),
+    #{ body := RespBody } = Response,
+    lager:info("body = ~p", [RespBody]),
+
+    %% valididate response code is 200 (ok) (can get 201 also?)
+    200 = RespStatus,
+
     %% test header contents are correct
     { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),

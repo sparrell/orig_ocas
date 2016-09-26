@@ -42,6 +42,10 @@
         , resource_exists/2
         , content_types_accepted/2
         , handle_json/2
+        , content_types_provided/2
+        , to_json/2
+        , to_text/2
+        , to_html/2
         ]).
 
 init( {tcp, http}, _Req, _Opts) ->
@@ -54,6 +58,7 @@ rest_init(Req, _Opts) ->
     {ok, Req2, #{}}.
 
 allowed_methods(Req, State) ->
+    lager:debug("got to allowed methods~n"),
     {[<<"POST">>], Req, State}.
 
 resource_exists(Req, State) ->
@@ -62,21 +67,59 @@ resource_exists(Req, State) ->
     {false, Req, State}.
 
 content_types_accepted(Req, State) ->
+    lager:debug("got to content_types~n"),
     %% header has content =application/json/whatever
     { [{ { <<"application">>, <<"json">>, '*'} , handle_json}], Req, State}.
 
 handle_json(Req, State) ->
+    lager:debug("got to handle_json~n"),
     %% put stuff here for actually doing stuff
     { ok, Body, Req1} = cowboy_req:body(Req),
-    JsonInputMap = jiffy:decode(Body, [return_maps]),
-    lager:debug("handle_json JsonInputMap ~p", [JsonInputMap] ),
+    JsonMap = jsx:decode(Body, [return_maps]),
+    lager:debug("handle_json JsonInputMap ~p", [JsonMap] ),
 
-    %% verify json
+    lager:debug("handle_json Req ~p", [Req1] ),
+    lager:debug("handle_json State ~p", [State] ),
 
-    %% decide what to return
-    {Host, Req2} = cowboy_req:header(<<"host">>, Req1),
-    lager:debug("Host ~p", [Host] ),
-    Location = this_is_a_placeholder,
-    { {true, Location}, Req2, State}.
+    %% verify json - add this in eventually
+
+    %% store the json in State for later use
+    State2 = maps:put(json, JsonMap, State),
+
+    %% return
+    {true, Req1, State2}.
 
 
+%% What type of output allowed (and for now process input to output here)
+content_types_provided(Req, State) ->
+    {[
+        {<<"application/json">>, to_json},
+        {<<"text/plain">>, to_text},
+        {<<"text/html">>, to_html}
+    ], Req, State}.
+
+%% reply with json
+to_json(Req, State) ->
+  Json = maps:get(json, State, undefined),
+  Body = jsx:encode(Json, [{indent,2}]),
+  {Body, Req, State}.
+
+%% reply with text
+to_text(Req, State) ->
+  Json = maps:get(json, State, undefined),
+  RawText = io:format("~p", [Json]),
+  BinText = list_to_binary(RawText),
+  Body = BinText,
+  {Body, Req, State}.
+
+%% reply with html
+to_html(Req, State) ->
+  Json = maps:get(json, State, undefined),
+  JsonText = jsx:encode(Json, [{indent,2}]),
+  Head = "<html><head><meta charset=\"utf-8\"><title>Json as html text!</title></head><body>",
+  Mid  = io:format("~p", [JsonText]),
+  Tail = "</body></html>",
+  RawText = Head + Mid + Tail,
+  BinText = list_to_binary(RawText),
+  Body = BinText,
+  {Body, Req, State}.
