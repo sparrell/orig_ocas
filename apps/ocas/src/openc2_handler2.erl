@@ -1,4 +1,4 @@
--module(openc2_handler).
+-module(openc2_handler2).
 %%%-------------------------------------------------------------------
 %%% @author Duncan Sparrell
 %%% @copyright (C) 2015, sFractal Consulting LLC
@@ -112,3 +112,8 @@ respond_json(true, Req) ->
 %%    lager:debug("Req2: ~p", [Req2]),
 %%    Req2.  %% change this to correctly return
     
+to_html(Req, State) ->
+    %% more to do - really should check (message a status node?) first
+    %% for now just say ok
+    Body = <<"<html><body>ok</body></html>">>,
+    {Body, Req, State}.
