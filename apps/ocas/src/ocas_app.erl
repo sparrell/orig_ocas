@@ -38,11 +38,11 @@
 start(_StartType, _StartArgs) ->
 
     %% log pid of this
-    lager:info("self pid: ~p~n", [self()]),
+    lager:info("ocas_app pid: ~p", [self()]),
 
     %% log what apps running
     Apps = application:which_applications(),
-    lager:info("apps: ~p~n", [Apps]),
+    lager:info("apps: ~p", [Apps]),
 
     %% start supervisor
     lager:info("starting supervisor"),
@@ -53,9 +53,9 @@ start(_StartType, _StartArgs) ->
     WebServerReturn = start_webserver(),
 
     %% log some info
-    lager:info("webserver return: ~p~n", [WebServerReturn]),
+    lager:info("webserver return: ~p", [WebServerReturn]),
     AppEnv = application:get_all_env(),
-    lager:info("env: ~p~n", [AppEnv]),
+    lager:info("env: ~p", [AppEnv]),
 
     %% return
     {ok, WebServerReturn}.
@@ -76,11 +76,11 @@ stop(_State) ->
 start_webserver() ->
   %% which port to listen to
   {ok, Port} = application:get_env(port),
-  lager:info("starting cowboy on port: ~p~n", [Port]),
+  lager:info("starting cowboy on port: ~p", [Port]),
 
   %% how many parallel listeners
   {ok, ListenerCount} = application:get_env(listener_count), 
-  lager:info("starting ~p listeners~n", [ListenerCount]),
+  lager:info("starting ~p listeners", [ListenerCount]),
 
   %% setup routes
   Routes = 
@@ -89,7 +89,9 @@ start_webserver() ->
         '_'  %virtual hostname (any host name)
       , [ 
           {"/status", status_handler, []}  % not sure if need a status independent of json handling
+        , {"/ok", status_ok_handler, []}  % returns ok if service working
         , {"/openc2", openc2_handler, []}    % handles the meat of openc2
+        , {"/openc22", openc2_handler2, []}    % debugging
         ]
       }
     ],
