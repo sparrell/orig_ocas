@@ -107,10 +107,6 @@ respond_json(true, Req) ->
     %% put together the reply and return it
     lager:debug("about to do reply in respond json"),
     cowboy_req:reply(200, Headers, ReplyBody, Req1).
-%% for debugging
-%%    {ok, Req2} = cowboy_req:reply(200, Headers, ReplyBody, Req1),
-%%    lager:debug("Req2: ~p", [Req2]),
-%%    Req2.  %% change this to correctly return
     
 to_html(Req, State) ->
     %% more to do - really should check (message a status node?) first
