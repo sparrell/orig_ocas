@@ -106,11 +106,15 @@ respond_json(true, Req) ->
     VerfiedAction = verify_action(ActionKeyExists,JsonMap),    
     lager:info("return verify_action: ~p!!!!", [VerfiedAction]),
 
+    %% execute the VerifiedAction setting up a process
+    ActionReturn = actions:VerfiedAction(JsonMap,whatever),
+    lager:info("actions:VerfiedAction: ~p!!!!", [ActionReturn]),
+
 
     %% separate out the commands and deal with each - add this in eventually
     %% put stuff here
-    What = json_actions(JsonMap),
-    lager:info("json_actions(JsonMap): ~p!!!!", [What]),
+    %%What = json_actions(JsonMap),
+    %%lager:info("json_actions(JsonMap): ~p!!!!", [What]),
     
     %% for now just reply with what came in as plain text
     ReplyBody = jsx:encode(JsonMap, [{indent,2}]),
