@@ -80,6 +80,10 @@ get_valid_action(Action) ->
     %% this routine verifies action is on list of valid actions
     %% and returns atom which is routine to run.
 
+    %% note it uses a list instead of a simple binary_to_atom
+    %% this is intentional to prevent DoS attacks 
+    %%   (which would use up atoms by sending many invalid actions)
+
     ValidActions = 
         #{ <<"scan">> => scan 
         ,  <<"locate">> => locate 
@@ -262,7 +266,11 @@ mitigate(_Json, _Whatever) ->
     %% what happens next? 
     %%     spin up a process for this command and have it orchestrate
     %%     have it spin up a process for target & actuator (or should actuators already be up?)
-    ok.
+    ok.  %% should return the process
+
+mitigate_process(_Json) ->
+   ok. %% need to put in loop code
+
 
 remediate(_Json, _Whatever) ->
     lager:debug("GOT TO remediate!!!!"),
