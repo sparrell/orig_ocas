@@ -71,6 +71,7 @@
         , augment/2
         , investigate/2
         , mitigate/2
+        , mitigate_server/1
         , remediate/2
         , response/2
         , alert/2
@@ -261,15 +262,46 @@ investigate(_Json, _Whatever) ->
     lager:debug("GOT TO investigate!!!!"),
     ok.
 
-mitigate(_Json, _Whatever) ->
+mitigate(Json, _Whatever) ->
     lager:info("Got to mitigate!!!!"),
-    %% what happens next? 
-    %%     spin up a process for this command and have it orchestrate
+    %% spin up a process for this command and have it orchestrate
     %%     have it spin up a process for target & actuator (or should actuators already be up?)
-    ok.  %% should return the process
+    MitigateProcess = spawn(actions, mitigate_server, [Json]),
+    %% check works
+    MitigateProcess!{self(), keepalive},
+    receive
+        mitigate_keepalive_received ->
+            lager:debug( "mitigate startup got keepalive" )
+    after 500 ->   % timeout in 0.5 seconds
+        lager:debug( "mitigate startup timed out on keepalive" )
+    end,
 
-mitigate_process(_Json) ->
-   ok. %% need to put in loop code
+    %% return spawned process id
+    MitigateProcess.
+
+mitigate_server(Json) ->
+    %% separate process to handle mitigate action
+
+    %% initialize
+    lager:debug( "starting mitigate server with ~p", [Json] ),
+
+    %% await messages, then process them
+    receive
+        %% keepalive (for testing)
+        { From, keepalive } ->
+            lager:debug( "mitigate server got keepalive" ),
+            From!mitigate_keepalive_received,
+            mitigate_server(Json);
+        %% stop server - note it doesnt loop
+        stop_server ->
+            lager:debug( "mitigate server stopping" ),
+            stopping;
+        %% handle unaccounted for message
+        _ ->
+            lager:debug( "mitigate server got something not accounted for" ),
+            mitigate_server(Json)
+
+    end.
 
 
 remediate(_Json, _Whatever) ->

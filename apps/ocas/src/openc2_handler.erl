@@ -120,7 +120,7 @@ respond_json(true, Req) ->
 
 verify_action( false, JsonMap ) ->
   %% false means no action key - input json was bad
-  lager:info("verify_action failed - no action in json input"),
+  lager:info("verify_action failed - no action in json input ~p", [JsonMap] ),
   invalid_json_no_action_keyword;
 
 verify_action( true, JsonMap ) ->
@@ -142,17 +142,3 @@ verify_action( true, JsonMap ) ->
   %% return valid action
   ValidAction.
 
-%% do different things for the different actions (and fail if action not found)
-
-
-json_actions(JsonMap) ->
-    %% something is wrong!!! Bad input json with unrecognized action
-    lager:debug("Bad JsonMap Action: ~p", [JsonMap]),
-    #{ <<"action">> := Action} = JsonMap,
-   got_bad_action = Action,  %% should blow up here - fix later to respond with bad input
-    ok.
-
-get_valid_actions() ->
-  ActionList = actions:module_info(functions),
-  lager:info("get_valid_actions-valid= ~p", [ActionList] ),
-  ActionList.
