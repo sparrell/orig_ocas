@@ -44,6 +44,7 @@
         , get/2
         , notify/2
         , deny/2
+        , deny_server/1
         , contain/2
         , allow/2
         , start/2
@@ -156,7 +157,43 @@ notify(_Json, _Whatever) ->
 
 deny(_Json, _Whatever) ->
     lager:debug("GOT TO deny!!!!"),
-    ok.
+    %% spin up a process for this command and have it orchestrate
+    %%     have it spin up a process for target & actuator (or should actuators already be up?)
+    DenyProcess = spawn(actions, deny_server, [Json]),
+    %% check works
+    DenyProcess!{self(), keepalive},
+    receive
+        deny_keepalive_received ->
+            lager:debug( "deny startup got keepalive" )
+    after 500 ->   % timeout in 0.5 seconds
+        lager:debug( "deny startup timed out on keepalive" )
+    end,
+
+    %% return spawned process id
+    DenyProcess.
+
+deny_server(Json) ->
+    %% separate process to handle deny action
+
+    %% initialize
+    lager:debug( "starting deny server with ~p", [Json] ),
+
+    %% await messages, then process them
+    receive
+        %% keepalive (for testing)
+        { From, keepalive } ->
+            lager:debug( "deny server got keepalive" ),
+            From!deny_keepalive_received,
+            deny_server(Json);
+        %% stop server - note it doesnt loop
+        stop_server ->
+            lager:debug( "deny server stopping" ),
+            stopping;
+        %% handle unaccounted for message
+        _ ->
+            lager:debug( "deny server got something not accounted for" ),
+            deny_server(Json)
+    end.
 
 contain(_Json, _Whatever) ->
     lager:debug("GOT TO contain!!!!"),

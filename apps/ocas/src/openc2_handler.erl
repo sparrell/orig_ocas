@@ -110,6 +110,10 @@ respond_json(true, Req) ->
     ActionReturn = actions:VerfiedAction(JsonMap,whatever),
     lager:info("actions:VerfiedAction: ~p!!!!", [ActionReturn]),
 
+    %% if a target exists, set up target process for it; otherwise setup generic target
+
+    %% if an actuator exists, set up actuator process for it; otherwise setup generic actuator
+
     %% for now just reply with what came in as plain text
     ReplyBody = jsx:encode(JsonMap, [{indent,2}]),
     Headers = [ {<<"content-type">>, <<"text/plain; charset=utf-8">>} ],
