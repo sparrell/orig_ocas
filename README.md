@@ -39,16 +39,16 @@ Vision
 -----
 The vision is to have this code running on a cloud server, with a protected interface, that could be used for interworking testing. See TBD for the glue to do this.
 
-Reference Implementation and Specification Validation
+### Reference Implementation and Specification Validation
 A primary purpose (and first use) of the simulator is to uncover bugaboos in the openC2 specification. One such has already been uncovered (the mixed case issue mentioned earlier). The openC2 specification is an attempt to simplify and standardize the command and control of all aspects of security. Alternative implementations, particularly if they can interoperate, help uncover discrepancies and different interpretations allowing the spec to be improved. Having ocas and the python reference implementation interact will go a long way towards validating the openC2 specification.
 
-One-time Single-command Simulator
+### One-time Single-command Simulator
 The first phase of software development will focus on getting the simulator up and running and accepting a single command. The software is being architected to both allow for easily scaling to a full network simulation and for using as the base for either an orchestrator or an actuator.
 
-Playbook Simulator
+### Playbook Simulator
 Once the one-time single-command simulator is fully functional, it will be extended to multi-command to allow playbook simulation of a full network. This will involve retaining state information which will be then extended to allow multiple orchestrators and the study of race conditions and temporal vulnerabilities.
 
-Implementation Template
+### Implementation Template
 Another vision is for this code be forked and 'filled in' as actual working implementations.
 The software has been architected to serve as a base for production security software as either an orchestrator or an actuator.
 See TBD for one example.
@@ -73,20 +73,20 @@ The directory structure is follows the erlang OTP convention. Of interest:
 The cowboy webserver is used.
 
 The start/2 module in ocas_app.erl is the callback run when the webserver is started. This module calls start_webserver() which contains the ocas specific software including a set of compiled routes which map url’s to the handler callbacks to run:
-•	/status will run status_hander callbacks 
-  o	for admin to find status
-•	/ok will run status_ok_handler callbacks
-  o	keepalive that just returns ok when all is ok
-•	/openc2 will run openc2_handler callbacks
-  o	receives the openc2 json, validates it, and executes what is in the openc2 command in the simulator
+- /status will run status_hander callbacks 
+   * for admin to find status
+- /ok will run status_ok_handler callbacks
+   * keepalive that just returns ok when all is ok
+- /openc2 will run openc2_handler callbacks
+   * receives the openc2 json, validates it, and executes what is in the openc2 command in the simulator
 
-status_handler 
+### status_handler 
 This is a future feature to allow those with administrative accessto get status information about the simulator itself (as opposed to about the network being simulated which would use openC2 commands). At the current point this api takes no parameters and returns the html for “Status Works - needs more later”.
 
-status_ok_handler
+### status_ok_handler
 This api returns a simple “ok” in either text, html, or json. This is to serve as a keepalive is one is needed.
 
-openc2_handler
+### openc2_handler
 This module is the heart of the simulator. When the url = /openc2 then the openc2_handler is used. It contains the following for it’s API:
 -	rest_init/2 - to tell cowboy this is a REST API
 -	allowed_methods/2 – to tell cowboy to only allow the POST method
