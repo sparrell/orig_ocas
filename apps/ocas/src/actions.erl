@@ -155,7 +155,7 @@ notify(_Json, _Whatever) ->
     lager:debug("GOT TO notify!!!!"),
     ok.
 
-deny(_Json, _Whatever) ->
+deny(Json, _Whatever) ->
     lager:debug("GOT TO deny!!!!"),
     %% spin up a process for this command and have it orchestrate
     %%     have it spin up a process for target & actuator (or should actuators already be up?)

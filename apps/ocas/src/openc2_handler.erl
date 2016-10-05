@@ -70,14 +70,14 @@ content_types_accepted(Req, State) ->
 
 handle_json(Req, State) ->
     lager:info("got to handle_json"),
-    %% put stuff here for actually doing stuff
 
     %% handle case of no body
     HasBody = cowboy_req:has_body(Req),
-    Req1 = respond_json(HasBody, Req),
+    {ok,Req1} = respond_json(HasBody, Req),
 
     lager:info("got past resond_json"),
     {true, Req1, State}.
+    %%{Req1, State}.
 
 %% respond to not having the necessary json body
 respond_json(false, Req) ->
