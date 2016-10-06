@@ -106,7 +106,7 @@ Although this may be overkill in these first phases of the project (specificatio
 
 The establishment of a separate erlang process for each entity and each action allows the simulator to scale both the scope (processes) and the context (messaging) of the network being simulated in addition to the modularizing the software that was mentioned earlier.
 
-Actions
+###Actions
 The Actions module contains get_valid_action/1 which both verifies the request’s json action is valid, and it spawns the process for that action. The spawned process runs the function for that action in the actions module (eg deny in the json action field spawns the process running the deny_server/1 function. As of this report, skeleton code exists for all 37 actions defined in the openC2 specification to at least verify a valid action. For two of the actions, deny and mitigate, the processes are actually spun up (albeit they only do a simple keepalive).
 
 
