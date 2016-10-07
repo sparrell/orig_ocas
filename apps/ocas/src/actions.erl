@@ -39,7 +39,6 @@
 -export([ get_valid_action/1
         , spawn_action/2
         , scan_server/1
-        , scan/2
         , locate/2
         , query/2
         , report/2
@@ -134,14 +133,15 @@ spawn_action( ActionServer, Json ) ->
 
     %% spin up a process for this command and have it orchestrate
     ActionProcess = spawn(actions, ActionServer, [Json]),
+
     %% check works by sending keepalive and verifying response
     ActionProcess!{self(), keepalive},
     receive
         %% get the keepalive
         {keepalive_received, ActionServer} ->
-            lager:debug( "~p startup got keepalive", [ActionProcess] )
+            lager:debug( "spawn_action(~p) got keepalive response from ~p", [ActionServer, ActionProcess] )
     after 500 ->   % timeout in 0.5 seconds
-        lager:debug( "~p startup timed out on keepalive", [ActionProcess] )
+        lager:debug( "spawn_action(~p) timed out on keepalive form ~p", [ActionServer, ActionProcess] )
     end,
 
     %% return spawned process id
@@ -154,14 +154,15 @@ scan_server(Json) ->
     %% separate process to handle scan action
 
     %% initialize
-    lager:debug( "starting scan server with ~p", [Json] ),
+    lager:debug( "starting scan server" ),
 
     %% await messages, then process them
     receive
         %% keepalive (for testing)
         { From, keepalive } ->
             lager:debug( "scan server got keepalive" ),
-            From!{keepalive_received, scan},
+            %% reply to the keepalive
+            From!{keepalive_received, scan_server},
             scan_server(Json);
         %% stop server - note it doesnt loop
         stop_server ->
@@ -174,10 +175,6 @@ scan_server(Json) ->
             scan_server(Json)
 
     end.
-
-scan(_Json, _Whatever) ->
-    lager:info("GOT TO scan!!!!"),
-    ok.
 
 locate(_Json, _Whatever) ->
     lager:info("GOT TO locate!!!!"),
