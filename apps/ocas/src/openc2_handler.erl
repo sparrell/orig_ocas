@@ -95,8 +95,7 @@ respond_json(true, Req) ->
     JsonMap = jsx:decode(Body, [return_maps]),
     lager:info("handle_json JsonInputMap ~p", [JsonMap] ),
 
-    %% verify json - add this in eventually
-    %% put stuff here
+    %% verify json 
     %% verify by checking if routing exists
     %%     convert action to atom
     %%     verify routine exists
@@ -107,7 +106,7 @@ respond_json(true, Req) ->
     lager:info("return verify_action: ~p!!!!", [VerfiedAction]),
 
     %% execute the VerifiedAction setting up a process
-    ActionReturn = actions:VerfiedAction(JsonMap,whatever),
+    ActionReturn = actions:spawn_action( VerfiedAction, JsonMap ),
     lager:info("actions:VerfiedAction: ~p!!!!", [ActionReturn]),
 
     %% if a target exists, set up target process for it; otherwise setup generic target

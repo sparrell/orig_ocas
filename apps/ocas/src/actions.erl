@@ -37,6 +37,8 @@
 -license("Apache 2.0").
 
 -export([ get_valid_action/1
+        , spawn_action/2
+        , scan_server/1
         , scan/2
         , locate/2
         , query/2
@@ -87,7 +89,7 @@ get_valid_action(Action) ->
     %%   (which would use up atoms by sending many invalid actions)
 
     ValidActions = 
-        #{ <<"scan">> => scan 
+        #{ <<"scan">> => scan_server 
         ,  <<"locate">> => locate 
         ,  <<"query">> => query 
         ,  <<"report">> => report 
@@ -129,7 +131,51 @@ get_valid_action(Action) ->
     %% return ActionAtom if valid action, otherwise return undefined
     maps:get(Action, ValidActions, undefined).
 
+spawn_action( ActionServer, Json ) ->
+    lager:info( "Got to spawn_action for ~p: ", [ ActionServer ] ),
+
+    %% spin up a process for this command and have it orchestrate
+    ActionProcess = spawn(actions, ActionServer, [Json]),
+    %% check works by sending keepalive and verifying response
+    ActionProcess!{self(), keepalive},
+    receive
+        %% get the keepalive
+        {keepalive_received, ActionServer} ->
+            lager:debug( "~p startup got keepalive", [ActionProcess] )
+    after 500 ->   % timeout in 0.5 seconds
+        lager:debug( "~p startup timed out on keepalive", [ActionProcess] )
+    end,
+
+    %% return spawned process id
+    ActionProcess.
+
+
 %% This routine API handles all the actions that can be taken
+
+scan_server(Json) ->
+    %% separate process to handle scan action
+
+    %% initialize
+    lager:debug( "starting scan server with ~p", [Json] ),
+
+    %% await messages, then process them
+    receive
+        %% keepalive (for testing)
+        { From, keepalive } ->
+            lager:debug( "scan server got keepalive" ),
+            From!{keepalive_received, scan},
+            scan_server(Json);
+        %% stop server - note it doesnt loop
+        stop_server ->
+            lager:debug( "scan server stopping" ),
+            stopping;
+        %% handle unaccounted for message, log and continue
+        _ ->
+            lager:debug( "scan server got something not accounted for" ),
+            %% need to add something about what to actually do (reply that got bad input)
+            scan_server(Json)
+
+    end.
 
 scan(_Json, _Whatever) ->
     lager:info("GOT TO scan!!!!"),
