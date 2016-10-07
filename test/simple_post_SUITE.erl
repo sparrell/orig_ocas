@@ -36,6 +36,7 @@ all() ->
     [ test_get_ok
     , test_get_status
     , test_post
+    , test_post_missing_body
     ].
 
 %% timeout if no reply in a minute
@@ -163,8 +164,47 @@ test_post(_Config) ->
     { <<"content-length">>, <<"136">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
     { <<"content-type">>, <<"text/plain; charset=utf-8">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
 
-    %% text body is what was expected
+    %% test body is what was expected
+    %% need to add something here (once real body exists)
     
+    ok.
+
+test_post_missing_body(_Config) ->
+    %% test proper reponse to bad input (no body to html request)
+
+    MyPort = application:get_env(ocas, port, 8080),
+    %%lager:info("test_post:port= ~p", [MyPort]),
+    {ok, Conn} = shotgun:open("localhost", MyPort),
+    Headers = [ {<<"content-type">>,<<"application/json">>} ],
+
+    Body = "",
+    Options = #{},
+
+    %% send json command to openc2
+    %%lager:info("about to send json to openc2"),
+    {ok, Response} = shotgun:post(Conn, "/openc2", Headers, Body, Options),
+    lager:info("sent json, got: ~p", [Response] ),
+
+    %% verify got 400 (bad request) for status code
+    #{ status_code := 400 } = Response,
+    %%lager:info("status = ~p", [RespStatus]),
+
+    #{ headers := RespHeaders} = Response,
+    %%lager:info("headers = ~p", [RespHeaders]),
+    #{ body := RespBody } = Response,
+    lager:info("body = ~p", [RespBody]),
+
+    %% test header contents are correct
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
+    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
+    %% note content length is for error mesg "Missing Body."
+    { <<"content-length">>, <<"13">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
+    %% not sure why error response is in html?
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
+
+    %% test body is what was expected
+    RespBody = <<"Missing body.">>,
+
     ok.
 
 %%%%%%%%%%%%%%%%%%%% Utilities
