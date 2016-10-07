@@ -37,6 +37,7 @@ all() ->
     , test_get_status
     , test_post
     , test_post_missing_body
+    , test_unsupported_media_type
     ].
 
 %% timeout if no reply in a minute
@@ -207,6 +208,39 @@ test_post_missing_body(_Config) ->
 
     ok.
 
+test_unsupported_media_type(_Config) ->
+    %% test proper reponse to bad input (html request has media type other than json)
+
+    MyPort = application:get_env(ocas, port, 8080),
+    %%lager:info("test_post:port= ~p", [MyPort]),
+    {ok, Conn} = shotgun:open("localhost", MyPort),
+    Headers = [ {<<"content-type">>,<<"text/plain">>} ],
+
+    Body = "scan",
+    Options = #{},
+
+    %% send json command to openc2
+    %%lager:info("about to send json to openc2"),
+    {ok, Response} = shotgun:post(Conn, "/openc2", Headers, Body, Options),
+    lager:info("sent json, got: ~p", [Response] ),
+
+    %% verify got 415 (unsupported media type) for status code
+    #{ status_code := 415 } = Response,
+    %%lager:info("status = ~p", [RespStatus]),
+
+    #{ headers := RespHeaders} = Response,
+    %%lager:info("headers = ~p", [RespHeaders]),
+
+    %% test header contents are correct
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
+    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
+    %% note content length is no body
+    { <<"content-length">>, <<"0">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
+    %% not sure why error response is in html?
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
+
+    ok.
+
 %%%%%%%%%%%%%%%%%%%% Utilities
 
 %% utility to save putting this in each test
@@ -240,8 +274,6 @@ send_recieve( Headers          % to send
 
     %% check if has body and if it is correct
     #{ body := RespBody } = Response,
-    %%lager:info("RespBody = ~p", [RespBody]),
-    %%lager:info("ExpectedBody = ~p", [ExpectedBody]),
     ExpectedBody = RespBody,
 
     %% return 

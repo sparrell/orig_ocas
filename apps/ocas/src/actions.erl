@@ -45,7 +45,6 @@
         , report/2
         , get/2
         , notify/2
-        , deny/2
         , deny_server/1
         , contain/2
         , allow/2
@@ -73,7 +72,6 @@
         , distill/2
         , augment/2
         , investigate/2
-        , mitigate/2
         , mitigate_server/1
         , remediate/2
         , response/2
@@ -95,7 +93,7 @@ get_valid_action(Action) ->
         ,  <<"report">> => report 
         ,  <<"get">> => get 
         ,  <<"notify">> => notify 
-        ,  <<"deny">> => deny 
+        ,  <<"deny">> => deny_server 
         ,  <<"contain">> => contain 
         ,  <<"allow">> => allow 
         ,  <<"start">> => start 
@@ -122,7 +120,7 @@ get_valid_action(Action) ->
         ,  <<"distill">> => distill 
         ,  <<"augment">> => augment 
         ,  <<"investigate">> => investigate 
-        ,  <<"mitigate">> => mitigate 
+        ,  <<"mitigate">> => mitigate_server 
         ,  <<"remediate">> => remediate 
         ,  <<"response">> => response 
         ,  <<"alert">> => alert 
@@ -200,23 +198,6 @@ get(_Json, _Whatever) ->
 notify(_Json, _Whatever) ->
     lager:debug("GOT TO notify!!!!"),
     ok.
-
-deny(Json, _Whatever) ->
-    lager:debug("GOT TO deny!!!!"),
-    %% spin up a process for this command and have it orchestrate
-    %%     have it spin up a process for target & actuator (or should actuators already be up?)
-    DenyProcess = spawn(actions, deny_server, [Json]),
-    %% check works
-    DenyProcess!{self(), keepalive},
-    receive
-        deny_keepalive_received ->
-            lager:debug( "deny startup got keepalive" )
-    after 500 ->   % timeout in 0.5 seconds
-        lager:debug( "deny startup timed out on keepalive" )
-    end,
-
-    %% return spawned process id
-    DenyProcess.
 
 deny_server(Json) ->
     %% separate process to handle deny action
@@ -344,23 +325,6 @@ augment(_Json, _Whatever) ->
 investigate(_Json, _Whatever) ->
     lager:debug("GOT TO investigate!!!!"),
     ok.
-
-mitigate(Json, _Whatever) ->
-    lager:info("Got to mitigate!!!!"),
-    %% spin up a process for this command and have it orchestrate
-    %%     have it spin up a process for target & actuator (or should actuators already be up?)
-    MitigateProcess = spawn(actions, mitigate_server, [Json]),
-    %% check works
-    MitigateProcess!{self(), keepalive},
-    receive
-        mitigate_keepalive_received ->
-            lager:debug( "mitigate startup got keepalive" )
-    after 500 ->   % timeout in 0.5 seconds
-        lager:debug( "mitigate startup timed out on keepalive" )
-    end,
-
-    %% return spawned process id
-    MitigateProcess.
 
 mitigate_server(Json) ->
     %% separate process to handle mitigate action
