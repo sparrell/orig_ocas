@@ -70,14 +70,14 @@ content_types_accepted(Req, State) ->
 
 handle_json(Req, State) ->
     lager:info("got to handle_json"),
-    %% put stuff here for actually doing stuff
 
     %% handle case of no body
     HasBody = cowboy_req:has_body(Req),
-    Req1 = respond_json(HasBody, Req),
+    {ok,Req1} = respond_json(HasBody, Req),
 
     lager:info("got past resond_json"),
     {true, Req1, State}.
+    %%{Req1, State}.
 
 %% respond to not having the necessary json body
 respond_json(false, Req) ->
@@ -95,8 +95,7 @@ respond_json(true, Req) ->
     JsonMap = jsx:decode(Body, [return_maps]),
     lager:info("handle_json JsonInputMap ~p", [JsonMap] ),
 
-    %% verify json - add this in eventually
-    %% put stuff here
+    %% verify json 
     %% verify by checking if routing exists
     %%     convert action to atom
     %%     verify routine exists
@@ -107,15 +106,13 @@ respond_json(true, Req) ->
     lager:info("return verify_action: ~p!!!!", [VerfiedAction]),
 
     %% execute the VerifiedAction setting up a process
-    ActionReturn = actions:VerfiedAction(JsonMap,whatever),
+    ActionReturn = actions:spawn_action( VerfiedAction, JsonMap ),
     lager:info("actions:VerfiedAction: ~p!!!!", [ActionReturn]),
 
+    %% if a target exists, set up target process for it; otherwise setup generic target
 
-    %% separate out the commands and deal with each - add this in eventually
-    %% put stuff here
-    %%What = json_actions(JsonMap),
-    %%lager:info("json_actions(JsonMap): ~p!!!!", [What]),
-    
+    %% if an actuator exists, set up actuator process for it; otherwise setup generic actuator
+
     %% for now just reply with what came in as plain text
     ReplyBody = jsx:encode(JsonMap, [{indent,2}]),
     Headers = [ {<<"content-type">>, <<"text/plain; charset=utf-8">>} ],
@@ -126,7 +123,7 @@ respond_json(true, Req) ->
 
 verify_action( false, JsonMap ) ->
   %% false means no action key - input json was bad
-  lager:info("verify_action failed - no action in json input"),
+  lager:info("verify_action failed - no action in json input ~p", [JsonMap] ),
   invalid_json_no_action_keyword;
 
 verify_action( true, JsonMap ) ->
@@ -148,17 +145,3 @@ verify_action( true, JsonMap ) ->
   %% return valid action
   ValidAction.
 
-%% do different things for the different actions (and fail if action not found)
-
-
-json_actions(JsonMap) ->
-    %% something is wrong!!! Bad input json with unrecognized action
-    lager:debug("Bad JsonMap Action: ~p", [JsonMap]),
-    #{ <<"action">> := Action} = JsonMap,
-   got_bad_action = Action,  %% should blow up here - fix later to respond with bad input
-    ok.
-
-get_valid_actions() ->
-  ActionList = actions:module_info(functions),
-  lager:info("get_valid_actions-valid= ~p", [ActionList] ),
-  ActionList.

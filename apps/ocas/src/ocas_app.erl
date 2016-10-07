@@ -91,7 +91,6 @@ start_webserver() ->
           {"/status", status_handler, []}  % not sure if need a status independent of json handling
         , {"/ok", status_ok_handler, []}  % returns ok if service working
         , {"/openc2", openc2_handler, []}    % handles the meat of openc2
-        , {"/openc22", openc2_handler2, []}    % debugging
         ]
       }
     ],
