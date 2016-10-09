@@ -71,15 +71,126 @@ content_types_accepted(Req, State) ->
 handle_json(Req, State) ->
     lager:info("got to handle_json"),
 
-    %% handle case of no body
+    %% check for case of no body
     HasBody = cowboy_req:has_body(Req),
-    {ok,Req1} = respond_json(HasBody, Req),
+    body_check(HasBody, Req, State ).
+%    {ok,Req1} = respond_json(HasBody, Req),
+%
+%    lager:info("got past resond_json"),
+%    {ok, Req1, State}.
+%    %%{Req1, State}.
 
-    lager:info("got past resond_json"),
-    {true, Req1, State}.
-    %%{Req1, State}.
+%% handle case of whether body present or not
+body_check(false, Req, State) ->
+    %% no body so bad request
+    State2 = maps:put(has_http_body, false, State),
+    {ok, Req2} = cowboy_req:reply(400, [], <<"Missing body.">>, Req),
+    %% return (don't move on since request was bad)
+    %%   is this correct return tuple?
+    {ok, Req2, State2};
+
+body_check(true, Req, State) ->
+    %% body present so move to next test
+    State2 = maps:put(has_http_body, true, State),
+
+    %% get the body of the request
+    { ok, Body, Req1} = cowboy_req:body(Req),
+    State3 = maps:put(http_body, Body, State2),
+
+    %% check if body is json as it should be
+    IsJson = jsx:is_json(Body),
+
+    is_body_json(IsJson, Req1, State3).
+
+is_body_json(false, Req, State) ->
+    %% decoding json failed so bad request
+    State2 = maps:put(good_json, false, State),
+    {ok, Req2} = cowboy_req:reply(400, [], <<"Bad JSON">>, Req),
+    %% return (don't move on since request was bad)
+    %%   is this correct return tuple?
+    {ok, Req2, State2};
+
+is_body_json(true, Req, State) ->
+    %% json decodes ok so move on to next test
+    State2 = maps:put(good_json, true, State),
+
+    Body = maps:get(http_body, State2),
+    JsonMap = jsx:decode(Body, [return_maps]),
+    lager:info("handle_json Json: InputMap ~p", [JsonMap] ),
+    State3 = maps:put(json_map, JsonMap, State2),
+
+    %% check for action
+    ActionKeyExists = maps:is_key( <<"action">>, JsonMap ),
+    has_action( ActionKeyExists, Req, State3 ).
+
+
+has_action(false, Req, State ) ->
+    %% Json doesn't have a action so abort ie bad request
+    State2 = maps:put(has_action, false, State),
+    {ok, Req2} = cowboy_req:reply(400, [], <<"Missing action">>, Req),
+    %% return (don't move on since request was bad)
+    %%   is this correct return tuple?
+    {ok, Req2, State2};
+
+has_action(true, Req, State ) ->
+    %% json has action so move on
+    State2 = maps:put(has_action, true, State),
+
+    %% move on to next step - is it a valid action
+    JsonMap = maps:get(json_map, State2),
+    ActionBin = maps:get( <<"action">>, State2 ),
+%    #{ <<"action">> := ActionBin } = JsonMap,
+    lager:info("action bintext: ~p", [ActionBin] ),
+    { ActionValid, ActionValue } = actions:is_valid_action(ActionBin),
+%  ValidAction = actions:get_valid_action(ActionBin),  %% remember to remove actions:get... when debugged
+
+    %% check if action is valid
+    check_valid_action( ActionValid, ActionValue, Req, State ).
+
+%% check if action is in valid
+check_valid_action( false, ActionValue, Req, State ) ->
+    %% illegal action so bad input
+    lager:info("check_valid_action: bad action: ~p", [ActionValue] ),
+    State2 = maps:put(action_valid, false, State),
+    
+    {ok, Req2} = cowboy_req:reply(400, [], <<"bad action value">>, Req),
+    %% return - not tail recursive since request was bad)
+    %%   is this correct return tuple?
+    {ok, Req2, State2};
+
+check_valid_action( true, ActionValue, Req, State ) ->
+    %% valid action - check existence of target, actuator, modifiers and then spin up action process
+    State2 = maps:put(action_valid, true, State),
+    lager:info("check_valid_action: good action: ~p", [ActionValue] ),
+
+    JsonMap = maps:get(json_map, State2),
+    TargetKeyExists = maps:is_key( <<"target">>, JsonMap ),
+    State3 = maps:put(has_target, TargetKeyExists, State2),
+    ActuatorKeyExists = maps:is_key( <<"actuator">>, JsonMap ),
+    State4 = maps:put(has_actuator, ActuatorKeyExists, State3),
+    ModifiersKeyExists = maps:is_key( <<"modifiers">>, JsonMap ),
+    State5 = maps:put(has_modifiers, ModifierKeyExists, State4),
+
+    %% spin up the action process
+    { ActionKeepAliveWorked, ActionPid } = actions:spawn_action( ActionValue, Req, State4, JsonMap ),
+    lager:info("~p=~p keepalive: ~p", [ActionValue, ActionPid, ActionKeepAliveWorked]),
+
+    %% save whether process startup worked for now and then reply
+    %% later fix so actually does stuff
+    State5 = maps:put(action_keepalive, ActionKeepAliveWorked, State4),
+    
+    send_response(Req, State5).
+
+send_response(Req, State) ->
+    %% for now just reply with state as json
+    ReplyBody = jsx:encode( State ),
+
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
+    cowboy_req:reply(200, Headers, ReplyBody, Req).
+
 
 %% respond to not having the necessary json body
+
 respond_json(false, Req) ->
     lager:info("got to respond_json false"),
     cowboy_req:reply(400, [], <<"Missing body.">>, Req);
@@ -106,16 +217,27 @@ respond_json(true, Req) ->
     lager:info("return verify_action: ~p!!!!", [VerfiedAction]),
 
     %% execute the VerifiedAction setting up a process
-    ActionReturn = actions:spawn_action( VerfiedAction, JsonMap ),
-    lager:info("actions:VerfiedAction: ~p!!!!", [ActionReturn]),
+    { ActionKeepAliveWorked, ActionPid } = actions:spawn_action( VerfiedAction, JsonMap ),
+    lager:info("actions:VerfiedAction: ~p, ~p!!!!", [ActionKeepAliveWorked, ActionPid]),
 
     %% if a target exists, set up target process for it; otherwise setup generic target
 
     %% if an actuator exists, set up actuator process for it; otherwise setup generic actuator
 
-    %% for now just reply with what came in as plain text
-    ReplyBody = jsx:encode(JsonMap, [{indent,2}]),
-    Headers = [ {<<"content-type">>, <<"text/plain; charset=utf-8">>} ],
+    %% for now reply with status info on process keepalives
+    ActionOut = #{ action => ActionKeyExists
+                 , server => VerfiedAction
+                 , keepalive => ActionKeepAliveWorked
+                 },
+    ReplyMap = #{ action => ActionOut
+                , target => undefined
+                , actuator => undefined
+                , modifiers => undefined
+                },
+    lager:info("ReplyMap: ~p", [ReplyMap]),
+    ReplyBody = jsx:encode( ReplyMap ),
+
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
     %% put together the reply and return it
     lager:info("about to do reply in respond json"),
     cowboy_req:reply(200, Headers, ReplyBody, Req1).
@@ -124,6 +246,8 @@ respond_json(true, Req) ->
 verify_action( false, JsonMap ) ->
   %% false means no action key - input json was bad
   lager:info("verify_action failed - no action in json input ~p", [JsonMap] ),
+
+  %% need to handle this case (do later)
   invalid_json_no_action_keyword;
 
 verify_action( true, JsonMap ) ->
@@ -138,7 +262,7 @@ verify_action( true, JsonMap ) ->
   %% logical might be to convert input to atom using
   %% binary_to_atom - but that leaves routine open to
   %% DoS attack by flooding with invalid actions
-  %% instead convert routine names to binary text
+  %% instead check a list
   ValidAction = actions:get_valid_action(ActionBin),
   lager:info("action atom: ~p", [ValidAction] ),
 

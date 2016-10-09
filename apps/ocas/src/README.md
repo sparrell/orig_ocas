@@ -1,6 +1,6 @@
 To understand the code, here are some scenarios showing what modules/functions are used.
 
-ocas_all starts a cowboy webserver with ranch listeners.
+ocas_app starts a cowboy webserver with ranch listeners.
 
 routes are established within cowboy so that when 
 http requests contain the following paths
@@ -20,6 +20,8 @@ This is used as a keepalive so you know the simulator is accepting requests.
 
 The sunny day path thru openc2_handler is documented in the following example.
 For this example, it is assumed a POST to /openc2 was sent with valid JSON containg a valid SCAN action eg:
+
+```erlang
 { "action": "scan",
               "target": { "type": "cybox:Device",
                           "specifiers": "NetworkScanner"
@@ -31,9 +33,11 @@ For this example, it is assumed a POST to /openc2 was sent with valid JSON conta
                "modifiers": { "response": "ack",
                               "where": "perimeter"}
              }
+```
 
 
 The flow is as follows:
+
 1. init/3 initializes the handler to use REST (and therefore rest_init/2 is called
 2. rest_init/2 just logs some info and sets the State variable to empty
 3. cowboy calls allowed_methods/2 which passes since since a POST was sent

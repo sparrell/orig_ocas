@@ -139,13 +139,15 @@ spawn_action( ActionServer, Json ) ->
     receive
         %% get the keepalive
         {keepalive_received, ActionServer} ->
-            lager:debug( "spawn_action(~p) got keepalive response from ~p", [ActionServer, ActionProcess] )
+            lager:debug( "spawn_action(~p) got keepalive response from ~p", [ActionServer, ActionProcess] ),
+            KeepAliveWorked = true
     after 500 ->   % timeout in 0.5 seconds
-        lager:debug( "spawn_action(~p) timed out on keepalive form ~p", [ActionServer, ActionProcess] )
+        lager:debug( "spawn_action(~p) timed out on keepalive form ~p", [ActionServer, ActionProcess] ),
+            KeepAliveWorked = false
     end,
 
-    %% return spawned process id
-    ActionProcess.
+    %% return whether keepalive worked, and spawned process id
+    { KeepAliveWorked, ActionProcess}.
 
 
 %% This routine API handles all the actions that can be taken
