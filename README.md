@@ -109,6 +109,10 @@ The establishment of a separate erlang process for each entity and each action a
 ###Actions
 The Actions module contains get_valid_action/1 which both verifies the request’s json action is valid, and it spawns the process for that action. The spawned process runs the function for that action in the actions module (eg deny in the json action field spawns the process running the deny_server/1 function. As of this report, skeleton code exists for all 37 actions defined in the openC2 specification to at least verify a valid action. For two of the actions, deny and mitigate, the processes are actually spun up (albeit they only do a simple keepalive).
 
+###More on software design
+See README.md in apps/ocas/src for more on the software design
+including a sunny day walk thru the modules/functions.
+
 
 Examples
 -----
