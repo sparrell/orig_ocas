@@ -212,7 +212,7 @@ deny_server(Json) ->
         %% keepalive (for testing)
         { From, keepalive } ->
             lager:debug( "deny server got keepalive" ),
-            From!deny_keepalive_received,
+            From!{keepalive_received, deny_server},
             deny_server(Json);
         %% stop server - note it doesnt loop
         stop_server ->
