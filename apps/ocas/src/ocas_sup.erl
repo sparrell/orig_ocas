@@ -33,7 +33,8 @@
 %% Supervisor callbacks
 -export([init/1]).
 
--define(SERVER, ?MODULE).    % macro defining "SERVER" to contain the name of this module
+%% macro defining "SERVER" to contain the name of this module
+-define(SERVER, ?MODULE).
 
 %%====================================================================
 %% API functions

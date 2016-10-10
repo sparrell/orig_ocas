@@ -79,16 +79,16 @@ start_webserver() ->
   lager:info("starting cowboy on port: ~p", [Port]),
 
   %% how many parallel listeners
-  {ok, ListenerCount} = application:get_env(listener_count), 
+  {ok, ListenerCount} = application:get_env(listener_count),
   lager:info("starting ~p listeners", [ListenerCount]),
 
   %% setup routes
-  Routes = 
+  Routes =
     [
       {
         '_'  %virtual hostname (any host name)
-      , [ 
-          {"/status", status_handler, []}  % not sure if need a status independent of json handling
+      , [
+          {"/status", status_handler, []}
         , {"/ok", status_ok_handler, []}  % returns ok if service working
         , {"/openc2", openc2_handler, []}    % handles the meat of openc2
         ]

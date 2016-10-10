@@ -16,7 +16,7 @@
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
-%% @doc test scan action (note test not much until scan feature gets implemented)
+%% @doc test scan action
 %% @end
 %%%-------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ all() ->
 
 %% timeout if no reply in a minute
 suite() ->
-    [{timetrap,{minutes,2}}].
+    [{timetrap, {minutes, 2}}].
 
 %% setup config parameters
 init_per_suite(Config) ->
@@ -89,7 +89,7 @@ test_scan(_Config) ->
     %% expect to get 200 status code
     ExpectedStatus = 200,
 
-    %% for now just expect command to reply with dummy response which is json of State
+    %% for now command to reply with dummy response (json of State)
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
@@ -138,7 +138,8 @@ test_bad_scan(_Config) ->
     %% send the json in the body of the request
     ReqBody = Json,
 
-    %% expect to get 200 status code for now since not doing action specific semantic checks yet
+    %% expect to get 200 status code
+    %%    for now since not doing action specific semantic checks yet
     ExpectedStatus = 200,
 
     %% but will get 'false' for has_actuator
@@ -193,23 +194,25 @@ send_recieve( ReqHeaders          % to send
     %%lager:info("headers = ~p", [RespHeaders]),
 
     %% verify headers
-    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-    
 
-    %% check if has body 
+    %% check if has body
     #{ body := RespBody } = Response,
 
     %% check body is json
     true = jsx:is_json(RespBody),
-    
+
     %% decode json into erlang map
     JsonMap = jsx:decode( RespBody, [return_maps] ),
 
     %% check key/value pairs are as expected
     check_map(ExpectedJsonPairs, JsonMap),
 
-    %% return 
+    %% return
     ok.
 
 check_map( [], _JsonMap ) ->
@@ -225,5 +228,5 @@ check_map( [ {Key, Value} | RestOfExpectedJsonPairs ], JsonMap ) ->
 
     %% recurse thru remaining items in list
     check_map( RestOfExpectedJsonPairs, JsonMap).
-    
+
 
