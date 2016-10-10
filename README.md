@@ -91,23 +91,52 @@ This module is the heart of the simulator. When the url = /openc2 then the openc
 -	rest_init/2 - to tell cowboy this is a REST API
 -	allowed_methods/2 – to tell cowboy to only allow the POST method
 -	content_types_accepted/2 – to tell cowboy that only JSON is allowed, and to pass control to handle_json/2 when json is posted on this url 
--	handle_json/2 (and it’s internal helper routines like respond_json, verify_action, etc) :
+-	handle_json/2 (and it’s helper routines) :
 o	verifies there is a body in the http request
 o	decodes and verifies the json
 o	spawns the necessary processes for action/target/actuator/modifier (more on this further down)
 o	does the simulation
 o	sends the appropriate http response 
 
-The openC2 language is in JSON and consists of 3 mandatory top-level fields (action, target, actuator) and one optional top-level field (modifiers). The nature of the openc2 command set poses some interesting challenges in how to organize the software (see add ref to MulitMode talk on 29-Sep-2016 at OpenC2 face2face). Ocas is organized taking advantage of erlang’s concurrency, small lightweight processes, and messaging. This allows the action/target/actuator/modifier code to remain independent of each other. For example, if a new actuator is added, it should not require changes to the actions software.
+The openC2 language is in JSON and consists of 
+two mandatory top-level fields (action, target) 
+and two optional top-level fields (actuator, modifiers). 
+The nature of the openc2 command set poses some interesting challenges 
+in how to organize the software 
+(see add ref to MulitMode talk on 29-Sep-2016 at OpenC2 face2face). 
+Ocas is organized taking advantage of erlang’s concurrency, small lightweight processes, and messaging. 
+This allows the action/target/actuator/modifier code 
+to remain independent of each other. 
+For example, if a new actuator is added, it should not require changes to the actions software.
 
-This is accomplished by spinning up erlang processes for the particular action (eg deny), target(eg network connection), actuator (eg network firewall), and modifier (eg acknowledge). These processes interact via messages to accomplish the desired simulation result.
+This is accomplished by spinning up erlang processes for the particular action (eg deny), 
+target(eg network connection), actuator (eg network firewall), 
+and modifier (eg acknowledge). 
+These processes interact via messages to accomplish the desired simulation result.
 
-Although this may be overkill in these first phases of the project (specification validation and one-time, single-command simulator); it allows the same code to scale up for the full network simulation including initializing the network to be simulated, playbook simulation, multiple concurrent orchestrators (eg looking for race conditions and time-dependent security vulnerabilities), and pen testing via simulation.
+Although this may be overkill in these first phases of the project 
+(specification validation and one-time, single-command simulator); 
+it allows the same code to scale up for the full network simulation 
+including initializing the network to be simulated, playbook simulation, 
+multiple concurrent orchestrators 
+(eg looking for race conditions and time-dependent security vulnerabilities), 
+and pen testing via simulation.
 
-The establishment of a separate erlang process for each entity and each action allows the simulator to scale both the scope (processes) and the context (messaging) of the network being simulated in addition to the modularizing the software that was mentioned earlier.
+The establishment of a separate erlang process for each entity 
+and each action allows the simulator to scale both the scope (processes) 
+and the context (messaging) of the network being simulated 
+in addition to the modularizing the software that was mentioned earlier.
 
 ###Actions
-The Actions module contains get_valid_action/1 which both verifies the request’s json action is valid, and it spawns the process for that action. The spawned process runs the function for that action in the actions module (eg deny in the json action field spawns the process running the deny_server/1 function. As of this report, skeleton code exists for all 37 actions defined in the openC2 specification to at least verify a valid action. For two of the actions, deny and mitigate, the processes are actually spun up (albeit they only do a simple keepalive).
+The Actions module contains get_valid_action/1 
+which both verifies the request’s json action is valid, 
+and it spawns the process for that action. The spawned process 
+runs the function for that action in the actions module 
+(eg deny in the json action field spawns the process running the deny_server/1 function. 
+As of this report, skeleton code exists for all 37 actions defined in the openC2 specification 
+to at least verify a valid action. 
+For two of the actions, deny and mitigate, 
+the processes are actually spun up (albeit they only do a simple keepalive).
 
 ###More on software design
 See README.md in apps/ocas/src for more on the software design
