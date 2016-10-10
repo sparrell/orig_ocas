@@ -162,11 +162,10 @@ test_post(_Config) ->
     { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
     %%   note content length is likely to change as real commands get implemented
-    { <<"content-length">>, <<"136">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
-    { <<"content-type">>, <<"text/plain; charset=utf-8">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
+    { <<"content-length">>, <<"511">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
+    { <<"content-type">>, <<"application/json">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
 
-    %% test body is what was expected
-    %% need to add something here (once real body exists)
+    %% test body is what was expected in actual command tests
     
     ok.
 
