@@ -146,14 +146,16 @@ has_action(true, Req, State ) ->
 check_valid_action( false, ActionValue, Req, State ) ->
     %% illegal action so bad input
     lager:info("check_valid_action: bad action: ~p", [ActionValue] ),
-    
+
     {ok, Req2} = cowboy_req:reply(400, [], <<"bad action value">>, Req),
     %% return - not tail recursive since request was bad)
     %%   is this correct return tuple?
     {ok, Req2, State};
 
 check_valid_action( true, ActionValue, Req, State ) ->
-    %% valid action - check existence of target, actuator, modifiers and then spin up action process
+    %% valid action
+    %%   check existence of target, actuator, modifiers
+    %%   and then spin up action process
     lager:info("check_valid_action: good action: ~p", [ActionValue] ),
 
     JsonMap = maps:get(json_map, State),
@@ -165,13 +167,17 @@ check_valid_action( true, ActionValue, Req, State ) ->
     State4 = maps:put(has_modifiers, ModifiersKeyExists, State3),
 
     %% spin up the action process
-    { ActionKeepAliveWorked, ActionPid } = actions:spawn_action( ActionValue, JsonMap ),
-    lager:info("~p=~p keepalive: ~p", [ActionValue, ActionPid, ActionKeepAliveWorked]),
+    { ActionKeepAliveWorked, ActionPid } = actions:spawn_action( ActionValue
+                                                               , JsonMap ),
+    lager:info("~p=~p keepalive: ~p", [ ActionValue
+                                      , ActionPid
+                                      , ActionKeepAliveWorked
+                                      ]),
 
     %% save whether process startup worked for now and then reply
     %% later fix so actually does stuff
     State5 = maps:put(action_keepalive, ActionKeepAliveWorked, State4),
-    
+
     send_response(Req, State5).
 
 send_response(Req, State) ->

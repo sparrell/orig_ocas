@@ -82,52 +82,52 @@ is_valid_action(Action) ->
     %% and returns atom which is routine to run.
 
     %% note it uses a list instead of a simple binary_to_atom
-    %% this is intentional to prevent DoS attacks 
+    %% this is intentional to prevent DoS attacks
     %%   (which would use up atoms by sending many invalid actions)
 
-    ValidActions = 
-        #{ <<"scan">> => scan_server 
-        ,  <<"locate">> => locate 
-        ,  <<"query">> => query 
-        ,  <<"report">> => report 
-        ,  <<"get">> => get 
-        ,  <<"notify">> => notify 
-        ,  <<"deny">> => deny_server 
-        ,  <<"contain">> => contain 
-        ,  <<"allow">> => allow 
-        ,  <<"start">> => start 
-        ,  <<"stop">> => stop 
-        ,  <<"restart">> => restart 
-        ,  <<"pause">> => pause 
-        ,  <<"resume">> => resume 
-        ,  <<"cancel">> => cancel 
-        ,  <<"set">> => set 
-        ,  <<"update">> => update 
-        ,  <<"move">> => move 
-        ,  <<"redirect">> => redirect 
-        ,  <<"delete">> => delete 
-        ,  <<"snapshot">> => snapshot 
-        ,  <<"detonate">> => detonate 
-        ,  <<"restore">> => restore 
-        ,  <<"save">> => save 
-        ,  <<"modify">> => modify 
-        ,  <<"throttle">> => throttle 
-        ,  <<"delay">> => delay 
-        ,  <<"substitute">> => substitute 
-        ,  <<"copy">> => copy 
-        ,  <<"sync">> => sync 
-        ,  <<"distill">> => distill 
-        ,  <<"augment">> => augment 
-        ,  <<"investigate">> => investigate 
-        ,  <<"mitigate">> => mitigate_server 
-        ,  <<"remediate">> => remediate 
-        ,  <<"response">> => response 
-        ,  <<"alert">> => alert 
-        }, 
+    ValidActions =
+        #{ <<"scan">> => scan_server
+        ,  <<"locate">> => locate
+        ,  <<"query">> => query
+        ,  <<"report">> => report
+        ,  <<"get">> => get
+        ,  <<"notify">> => notify
+        ,  <<"deny">> => deny_server
+        ,  <<"contain">> => contain
+        ,  <<"allow">> => allow
+        ,  <<"start">> => start
+        ,  <<"stop">> => stop
+        ,  <<"restart">> => restart
+        ,  <<"pause">> => pause
+        ,  <<"resume">> => resume
+        ,  <<"cancel">> => cancel
+        ,  <<"set">> => set
+        ,  <<"update">> => update
+        ,  <<"move">> => move
+        ,  <<"redirect">> => redirect
+        ,  <<"delete">> => delete
+        ,  <<"snapshot">> => snapshot
+        ,  <<"detonate">> => detonate
+        ,  <<"restore">> => restore
+        ,  <<"save">> => save
+        ,  <<"modify">> => modify
+        ,  <<"throttle">> => throttle
+        ,  <<"delay">> => delay
+        ,  <<"substitute">> => substitute
+        ,  <<"copy">> => copy
+        ,  <<"sync">> => sync
+        ,  <<"distill">> => distill
+        ,  <<"augment">> => augment
+        ,  <<"investigate">> => investigate
+        ,  <<"mitigate">> => mitigate_server
+        ,  <<"remediate">> => remediate
+        ,  <<"response">> => response
+        ,  <<"alert">> => alert
+        },
 
     %% return {true, server to run} if valid action,
     %%      otherwise return {false, undefined}
-    ActionValid = maps:is_key(Action,ValidActions),
+    ActionValid = maps:is_key(Action, ValidActions),
     ActionValue = maps:get(Action, ValidActions, undefined),
     { ActionValid, ActionValue }.
 
@@ -142,10 +142,14 @@ spawn_action( ActionServer, Json ) ->
     receive
         %% get the keepalive
         {keepalive_received, ActionServer} ->
-            lager:debug( "spawn_action(~p) got keepalive response from ~p", [ActionServer, ActionProcess] ),
+            lager:debug( "spawn_action(~p) keepalive from ~p", [ ActionServer
+                                                               , ActionProcess
+                                                               ] ),
             KeepAliveWorked = true
     after 500 ->   % timeout in 0.5 seconds
-        lager:debug( "spawn_action(~p) timed out on keepalive form ~p", [ActionServer, ActionProcess] ),
+        lager:debug( "spawn_action(~p) no keepalive from ~p", [ ActionServer
+                                                              , ActionProcess
+                                                               ] ),
             KeepAliveWorked = false
     end,
 
@@ -176,7 +180,7 @@ scan_server(Json) ->
         %% handle unaccounted for message, log and continue
         _ ->
             lager:debug( "scan server got something not accounted for" ),
-            %% need to add something about what to actually do (reply that got bad input)
+            %% need fix about what to actually do (reply that got bad input)
             scan_server(Json)
 
     end.

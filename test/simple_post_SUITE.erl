@@ -42,7 +42,7 @@ all() ->
 
 %% timeout if no reply in a minute
 suite() ->
-    [{timetrap,{minutes,2}}].
+    [{timetrap, {minutes, 2}}].
 
 %% setup config parameters
 init_per_suite(Config) ->
@@ -65,9 +65,9 @@ init_per_suite(Config) ->
 test_get_ok(_Config) ->
 
     %% send request, get response, and deciper text response
-    send_recieve( [ {<<"content-type">>, <<"application/text">>}  %% sending Headers
-                  , {<<"accept">>, <<"text/plain">>} 
-                  ] 
+    send_recieve( [ {<<"content-type">>, <<"application/text">>}
+                  , {<<"accept">>, <<"text/plain">>}
+                  ]
                 , #{}      %% Options
                 , "/ok"    %% Url
                 , 200      %% ExpectedStatus
@@ -75,9 +75,9 @@ test_get_ok(_Config) ->
                 ),
 
     %% send request, get response, and deciper html response
-    send_recieve( [ {<<"content-type">>, <<"application/text">>}  %% sending Headers
-                  , {<<"accept">>, <<"text/html">>} 
-                  ] 
+    send_recieve( [ {<<"content-type">>, <<"application/text">>}
+                  , {<<"accept">>, <<"text/html">>}
+                  ]
                 , #{}      %% Options
                 , "/ok"    %% Url
                 , 200      %% ExpectedStatus
@@ -85,9 +85,9 @@ test_get_ok(_Config) ->
                 ),
 
     %% send request, get response, and deciper json response
-    send_recieve( [ {<<"content-type">>, <<"application/text">>}  %% sending Headers
-                  , {<<"accept">>, <<"application/json">>} 
-                  ] 
+    send_recieve( [ {<<"content-type">>, <<"application/text">>}
+                  , {<<"accept">>, <<"application/json">>}
+                  ]
                 , #{}      %% Options
                 , "/ok"    %% Url
                 , 200      %% ExpectedStatus
@@ -102,14 +102,17 @@ test_get_status(_Config) ->
     %%lager:info("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
     %%lager:info("connection = ~p", [Conn]),
-    Headers = [ {<<"content-type">>,<<"application/text">>} ],
+    Headers = [ {<<"content-type">>, <<"application/text">>} ],
     Options = #{},
     ResponseToGet = shotgun:get(Conn, "/status", Headers, Options),
     %%lager:info("response = ~p", [ResponseToGet]),
     {ok, Response} = ResponseToGet,
 
     %% breakout the status, headers, body
-    #{ status_code := RespStatus, headers := RespHeaders, body := RespBody } = Response,
+    #{ status_code := RespStatus
+     , headers := RespHeaders
+     , body := RespBody
+     } = Response,
     %%lager:info("status = ~p", [RespStatus]),
     %%lager:info("headers = ~p", [RespHeaders]),
     %%lager:info("body = ~p", [RespBody]),
@@ -118,10 +121,22 @@ test_get_status(_Config) ->
     200 = RespStatus,
 
     %% test header contents are correct
-    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
-    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-    { <<"content-type">>, <<"text/html">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
-    { <<"content-length">>, <<"57">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
+    { <<"date">>, _Date } =  lists:keyfind( <<"date">>
+                                          , 1
+                                          , RespHeaders
+                                          ),
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind( <<"content-type">>
+                                                           , 1
+                                                           , RespHeaders
+                                                           ),
+    { <<"content-length">>, <<"57">>} =  lists:keyfind( <<"content-length">>
+                                                      , 1
+                                                      , RespHeaders
+                                                      ),
 
     %% valididate body content
     <<"<html><body>Status Works - needs more later</body></html>">> = RespBody,
@@ -133,12 +148,13 @@ test_post(_Config) ->
     MyPort = application:get_env(ocas, port, 8080),
     %%lager:info("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
-    Headers = [ {<<"content-type">>,<<"application/json">>} ],
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
 
-    SomeJson = <<"{\"action\": \"mitigate\",
-                   \"target\": {
-                      \"type\":\"cybox:Hostname\",
-                      \"specifiers\":{\"Hostname_Value\":\"cdn.badco.org\"}}}">>,
+    SomeJson = <<"{
+      \"action\": \"mitigate\",
+      \"target\": {
+          \"type\":\"cybox:Hostname\",
+          \"specifiers\":{\"Hostname_Value\":\"cdn.badco.org\"}}}">>,
     %% validate Json
     true = jsx:is_json(SomeJson),
 
@@ -159,14 +175,28 @@ test_post(_Config) ->
     lager:info("body = ~p", [RespBody]),
 
     %% test header contents are correct
-    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
-    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-    %%   note content length is likely to change as real commands get implemented
-    { <<"content-length">>, <<"511">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
-    { <<"content-type">>, <<"application/json">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
+    { <<"date">>, _Date } =  lists:keyfind(<<"date">>
+                                          , 1
+                                          , RespHeaders
+                                          ),
+    %%   note content length is likely to change
+    { <<"content-length">>, <<"482">>} =  lists:keyfind(<<"content-length">>
+                                                                 , 1
+                                                                 , RespHeaders
+                                                                 ),
+    { <<"content-type">>
+    , <<"application/json">>
+    } = lists:keyfind( <<"content-type">>
+                     , 1
+                     , RespHeaders
+                     ),
 
     %% test body is what was expected in actual command tests
-    
+
     ok.
 
 test_post_missing_body(_Config) ->
@@ -175,7 +205,7 @@ test_post_missing_body(_Config) ->
     MyPort = application:get_env(ocas, port, 8080),
     %%lager:info("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
-    Headers = [ {<<"content-type">>,<<"application/json">>} ],
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
 
     Body = "",
     Options = #{},
@@ -195,12 +225,21 @@ test_post_missing_body(_Config) ->
     lager:info("body = ~p", [RespBody]),
 
     %% test header contents are correct
-    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
     %% note content length is for error mesg "Missing Body."
-    { <<"content-length">>, <<"13">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
+    { <<"content-length">>, <<"13">>} =  lists:keyfind( <<"content-length">>
+                                                      , 1
+                                                      , RespHeaders
+                                                      ),
     %% not sure why error response is in html?
-    { <<"content-type">>, <<"text/html">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind( <<"content-type">>
+                                                           , 1
+                                                           , RespHeaders
+                                                           ),
 
     %% test body is what was expected
     RespBody = <<"Missing body.">>,
@@ -208,12 +247,13 @@ test_post_missing_body(_Config) ->
     ok.
 
 test_unsupported_media_type(_Config) ->
-    %% test proper reponse to bad input (html request has media type other than json)
+    %% test proper reponse to bad input
+    %%     (html request has media type other than json)
 
     MyPort = application:get_env(ocas, port, 8080),
     %%lager:info("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
-    Headers = [ {<<"content-type">>,<<"text/plain">>} ],
+    Headers = [ {<<"content-type">>, <<"text/plain">>} ],
 
     Body = "scan",
     Options = #{},
@@ -231,12 +271,21 @@ test_unsupported_media_type(_Config) ->
     %%lager:info("headers = ~p", [RespHeaders]),
 
     %% test header contents are correct
-    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
     %% note content length is no body
-    { <<"content-length">>, <<"0">>} =  lists:keyfind(<<"content-length">>, 1, RespHeaders),
+    { <<"content-length">>, <<"0">>} =  lists:keyfind( <<"content-length">>
+                                                     , 1
+                                                     , RespHeaders
+                                                     ),
     %% not sure why error response is in html?
-    { <<"content-type">>, <<"text/html">>} =  lists:keyfind(<<"content-type">>, 1, RespHeaders),
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind( <<"content-type">>
+                                                           , 1
+                                                           , RespHeaders
+                                                           ),
 
     ok.
 
@@ -267,16 +316,22 @@ send_recieve( Headers          % to send
     %%lager:info("headers = ~p", [RespHeaders]),
 
     %% verify headers
-    { <<"server">>, <<"Cowboy">>} =  lists:keyfind(<<"server">>, 1, RespHeaders),
-    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-    
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
+    { <<"date">>, _Date } =  lists:keyfind( <<"date">>
+                                          , 1
+                                          , RespHeaders
+                                          ),
+
 
     %% check if has body and if it is correct
     #{ body := RespBody } = Response,
     ExpectedBody = RespBody,
 
-    %% return 
+    %% return
     ok.
 
-    
+
 
