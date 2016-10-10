@@ -89,8 +89,17 @@ test_scan(_Config) ->
     %% expect to get 200 status code
     ExpectedStatus = 200,
 
-    %% for now just expect command to reply with dummy response
-    ExpectedBody = <<"{\n  \"action\":\"scan\",\n  \"actuator\":{\n    \"specifiers\":\"scanner01\",\n    \"type\":\"network-scanner\"\n  },\n  \"modifiers\":{\n    \"response\":\"ack\",\n    \"where\":\"perimeter\"\n  },\n  \"target\":{\n    \"specifiers\":\"NetworkScanner\",\n    \"type\":\"cybox:Device\"\n  }\n}">>,
+    %% for now just expect command to reply with dummy response which is json of State
+    %% decode the json and check for key/values of interest
+    ExpectedJsonPairs = [ {<<"has_http_body">>, true}
+                        , {<<"good_json">>, true}
+                        , {<<"action">>, <<"scan_server">>}
+                        , {<<"action_valid">>, true}
+                        , {<<"has_actuator">>, true}
+                        , {<<"has_modifiers">>, true}
+                        , {<<"has_target">>, true}
+                        , {<<"action_keepalive">>, true}
+                        ],
 
     %% send request, test response
     send_recieve( ReqHeaders       % to send
@@ -98,7 +107,7 @@ test_scan(_Config) ->
                 , ReqBody          % to send
                 , Url              % to send
                 , ExpectedStatus  % test get this received
-                , ExpectedBody
+                , ExpectedJsonPairs
                 ),
 
     ok.
@@ -113,7 +122,7 @@ test_bad_scan(_Config) ->
 
     Options = #{},
 
-    %% Scan requires a target and an actuator - leave off and it should fail
+    %% Scan requires a target and a target - leave off target and it should fail
     Json = <<"{ \"action\": \"scan\",
                \"actuator\": {
                   \"type\": \"network-scanner\",
@@ -129,11 +138,19 @@ test_bad_scan(_Config) ->
     %% send the json in the body of the request
     ReqBody = Json,
 
-    %% expect to get ??? status code
-    ExpectedStatus = fix_this,
+    %% expect to get 200 status code for now since not doing action specific semantic checks yet
+    ExpectedStatus = 200,
 
-    %% for now just expect command to reply with dummy response
-    ExpectedBody = <<"{\n  \"action\":\"scan\",\n  \"actuator\":{\n    \"specifiers\":\"scanner01\",\n    \"type\":\"network-scanner\"\n  },\n  \"modifiers\":{\n    \"response\":\"ack\",\n    \"where\":\"perimeter\"\n  },\n  \"target\":{\n    \"specifiers\":\"NetworkScanner\",\n    \"type\":\"cybox:Device\"\n  }\n}">>,
+    %% but will get 'false' for has_actuator
+    ExpectedJsonPairs = [ {<<"has_http_body">>, true}
+                        , {<<"good_json">>, true}
+                        , {<<"action">>, <<"scan_server">>}
+                        , {<<"action_valid">>, true}
+                        , {<<"has_actuator">>, true}
+                        , {<<"has_modifiers">>, true}
+                        , {<<"has_target">>, false}
+                        , {<<"action_keepalive">>, true}
+                        ],
 
     %% send request, test response
     send_recieve( ReqHeaders       % to send
@@ -141,7 +158,7 @@ test_bad_scan(_Config) ->
                 , ReqBody          % to send
                 , Url              % to send
                 , ExpectedStatus  % test get this received
-                , ExpectedBody
+                , ExpectedJsonPairs
                 ),
 
 
@@ -156,7 +173,7 @@ send_recieve( ReqHeaders          % to send
             , ReqBody          % to send
             , Url              % to send
             , ExpectedStatus  % test get this received
-            , ExpectedBody
+            , ExpectedJsonPairs   % list of key/values in json
             ) ->
 
     MyPort = application:get_env(ocas, port, 8080),
@@ -180,12 +197,33 @@ send_recieve( ReqHeaders          % to send
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
     
 
-    %% check if has body and if it is correct
+    %% check if has body 
     #{ body := RespBody } = Response,
-    ExpectedBody = RespBody,
+
+    %% check body is json
+    true = jsx:is_json(RespBody),
+    
+    %% decode json into erlang map
+    JsonMap = jsx:decode( RespBody, [return_maps] ),
+
+    %% check key/value pairs are as expected
+    check_map(ExpectedJsonPairs, JsonMap),
 
     %% return 
     ok.
 
+check_map( [], _JsonMap ) ->
+    %% done since list is empty
+    ok;
+
+check_map( [ {Key, Value} | RestOfExpectedJsonPairs ], JsonMap ) ->
+    %% Grab  first item in list and verify
+    lager:info("Testing Key/Value: ~p/~p", [Key, Value]),
+
+    true = maps:is_key(Key, JsonMap),
+    Value = maps:get(Key, JsonMap),
+
+    %% recurse thru remaining items in list
+    check_map( RestOfExpectedJsonPairs, JsonMap).
     
 

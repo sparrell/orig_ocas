@@ -36,7 +36,7 @@
 -author("Duncan Sparrell").
 -license("Apache 2.0").
 
--export([ get_valid_action/1
+-export([ is_valid_action/1
         , spawn_action/2
         , scan_server/1
         , locate/2
@@ -77,7 +77,7 @@
         , alert/2
         ]).
 
-get_valid_action(Action) ->
+is_valid_action(Action) ->
     %% this routine verifies action is on list of valid actions
     %% and returns atom which is routine to run.
 
@@ -125,8 +125,11 @@ get_valid_action(Action) ->
         ,  <<"alert">> => alert 
         }, 
 
-    %% return ActionAtom if valid action, otherwise return undefined
-    maps:get(Action, ValidActions, undefined).
+    %% return {true, server to run} if valid action,
+    %%      otherwise return {false, undefined}
+    ActionValid = maps:is_key(Action,ValidActions),
+    ActionValue = maps:get(Action, ValidActions, undefined),
+    { ActionValid, ActionValue }.
 
 spawn_action( ActionServer, Json ) ->
     lager:info( "Got to spawn_action for ~p: ", [ ActionServer ] ),
@@ -336,7 +339,7 @@ mitigate_server(Json) ->
         %% keepalive (for testing)
         { From, keepalive } ->
             lager:debug( "mitigate server got keepalive" ),
-            From!mitigate_keepalive_received,
+            From!{keepalive_received, mitigate_server},
             mitigate_server(Json);
         %% stop server - note it doesnt loop
         stop_server ->
