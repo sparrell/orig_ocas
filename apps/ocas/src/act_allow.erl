@@ -59,7 +59,7 @@ allow_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "allow_server server got something not accounted for" ),
+            lager:debug( "allow_server: got something unknown" ),
             allow_server(State)
     end.
 

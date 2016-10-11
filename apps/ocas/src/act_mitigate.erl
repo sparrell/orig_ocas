@@ -59,7 +59,7 @@ mitigate_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "mitigate_server server got something not accounted for" ),
+            lager:debug( "mitigate_server got something unknown" ),
             mitigate_server(State)
     end.
 
