@@ -138,7 +138,7 @@ has_action(true, Req, State ) ->
                       , ActionModule
                       , ActionFunction
                       , Req
-                      , State5 
+                      , State5
                       ).
 
 %% check if action is in valid
