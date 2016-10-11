@@ -93,7 +93,8 @@ test_scan(_Config) ->
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action">>, <<"scan_server">>}
+                        , {<<"action_module">>, <<"act_scan">>}
+                        , {<<"action_function">>, <<"scan_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
@@ -145,7 +146,8 @@ test_bad_scan(_Config) ->
     %% but will get 'false' for has_actuator
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action">>, <<"scan_server">>}
+                        , {<<"action_module">>, <<"act_scan">>}
+                        , {<<"action_function">>, <<"scan_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
@@ -208,6 +210,9 @@ send_recieve( ReqHeaders          % to send
 
     %% decode json into erlang map
     JsonMap = jsx:decode( RespBody, [return_maps] ),
+
+    lager:info("ExpectedJsonPairs: ~p", [ExpectedJsonPairs]),
+    lager:info("JsonMap: ~p", [JsonMap]),
 
     %% check key/value pairs are as expected
     check_map(ExpectedJsonPairs, JsonMap),

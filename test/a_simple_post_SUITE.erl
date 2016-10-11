@@ -20,7 +20,7 @@
 %% @end
 %%%-------------------------------------------------------------------
 
--module(simple_post_SUITE).
+-module(a_simple_post_SUITE).
 -author("Duncan Sparrell").
 -copyright("2016, sFractal Consulting, LLC").
 -license(apache2).
@@ -184,7 +184,7 @@ test_post(_Config) ->
                                           , RespHeaders
                                           ),
     %%   note content length is likely to change
-    { <<"content-length">>, <<"482">>} =  lists:keyfind(<<"content-length">>
+    { <<"content-length">>, <<"522">>} =  lists:keyfind(<<"content-length">>
                                                                  , 1
                                                                  , RespHeaders
                                                                  ),
