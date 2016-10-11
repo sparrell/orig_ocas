@@ -134,7 +134,12 @@ has_action(true, Req, State ) ->
     State5 = maps:put(action_function, ActionFunction, State4),
 
     %% check if action is valid
-    check_valid_action( ActionValid, ActionModule, ActionFunction, Req, State5 ).
+    check_valid_action( ActionValid
+                      , ActionModule
+                      , ActionFunction
+                      , Req
+                      , State5 
+                      ).
 
 %% check if action is in valid
 check_valid_action( false, _ActionModule, _ActionFunction, Req, State ) ->

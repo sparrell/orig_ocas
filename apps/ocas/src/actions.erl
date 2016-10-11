@@ -96,7 +96,9 @@ is_valid_action(Action) ->
     { ActionValid, ActionValue }.
 
 spawn_action( ActionModule, ActionServer, Json ) ->
-    lager:info( "Got to spawn_action for ~p:~p ", [ ActionModule, ActionServer ] ),
+    lager:info( "Got to spawn_action for ~p:~p ", [ ActionModule
+                                                  , ActionServer 
+                                                  ] ),
 
     %% spin up a process for this command and have it orchestrate
     ActionProcess = spawn(ActionModule, ActionServer, [Json]),
