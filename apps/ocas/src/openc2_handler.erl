@@ -39,7 +39,6 @@
 -export([init/3
         , rest_init/2
         , allowed_methods/2
-%%        , resource_exists/2
         , content_types_accepted/2
         , handle_json/2
         ]).
@@ -56,12 +55,6 @@ rest_init(Req, _Opts) ->
 allowed_methods(Req, State) ->
     lager:info("got to allowed methods"),
     {[<<"POST">>], Req, State}.
-
-%%resource_exists(Req, State) ->
-    %% returning false since only method allowed is post
-    %%    and this routine creates new resource
-    %%    maybe should have used put instead
-%%    {false, Req, State}.
 
 content_types_accepted(Req, State) ->
     lager:info("got to content_types"),
@@ -135,28 +128,29 @@ has_action(true, Req, State ) ->
     JsonMap = maps:get(json_map, State2),
     ActionBin = maps:get( <<"action">>, JsonMap ),
     lager:info("action bintext: ~p", [ActionBin] ),
-    { ActionValid, ActionValue } = actions:is_valid_action(ActionBin),
+    { ActionValid, {ActionModule, ActionFunction} } = actions:is_valid_action(ActionBin),
     State3 = maps:put(action_valid, ActionValid, State2),
-    State4 = maps:put(action, ActionValue, State3),
+    State4 = maps:put(action_module, ActionModule, State3),
+    State5 = maps:put(action_function, ActionFunction, State4),
 
     %% check if action is valid
-    check_valid_action( ActionValid, ActionValue, Req, State4 ).
+    check_valid_action( ActionValid, ActionModule, ActionFunction, Req, State5 ).
 
 %% check if action is in valid
-check_valid_action( false, ActionValue, Req, State ) ->
+check_valid_action( false, _ActionModule, _ActionFunction, Req, State ) ->
     %% illegal action so bad input
-    lager:info("check_valid_action: bad action: ~p", [ActionValue] ),
+    lager:info("check_valid_action: bad action" ),
 
     {ok, Req2} = cowboy_req:reply(400, [], <<"bad action value">>, Req),
     %% return - not tail recursive since request was bad)
     %%   is this correct return tuple?
     {ok, Req2, State};
 
-check_valid_action( true, ActionValue, Req, State ) ->
+check_valid_action( true, ActionModule, ActionFunction, Req, State ) ->
     %% valid action
     %%   check existence of target, actuator, modifiers
     %%   and then spin up action process
-    lager:info("check_valid_action: good action: ~p", [ActionValue] ),
+    lager:info("check_valid_action: good action: ~p", [ActionFunction] ),
 
     JsonMap = maps:get(json_map, State),
     TargetKeyExists = maps:is_key( <<"target">>, JsonMap ),
@@ -167,9 +161,10 @@ check_valid_action( true, ActionValue, Req, State ) ->
     State4 = maps:put(has_modifiers, ModifiersKeyExists, State3),
 
     %% spin up the action process
-    { ActionKeepAliveWorked, ActionPid } = actions:spawn_action( ActionValue
+    { ActionKeepAliveWorked, ActionPid } = actions:spawn_action( ActionModule
+                                                               , ActionFunction
                                                                , JsonMap ),
-    lager:info("~p=~p keepalive: ~p", [ ActionValue
+    lager:info("~p=~p keepalive: ~p", [ ActionFunction
                                       , ActionPid
                                       , ActionKeepAliveWorked
                                       ]),
