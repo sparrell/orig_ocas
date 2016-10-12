@@ -25,6 +25,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+Code of Conduct
+-----
+TL;DR - Don't be a jerk!
+
+To make sure there are no barriers to ocas development for any developers who want to get involved, 
+a Code of Conduct was adopted and can be found at [code_of_conduct.md](./code_of_conduct.md). 
+Please read and ahere to it.
+This Code of Conduct is adapted from the Contributor Covenant, version 1.4.0, available at 
+[http://contributor-covenant.org/][http://contributor-covenant.org/].
+
+Collective Code Construction Contract (C4)
+-----
+C4 provides a standard process for contributing, evaluating and discussing improvements on software projects. 
+It defines specific technical requirements for projects 
+like a style guide, unit tests, git and similar platforms. 
+It also establishes different personas for projects, 
+with clear and distinct duties. 
+C4 specifies a process for documenting 
+and discussing issues including seeking consensus and clear descriptions, 
+use of "pull requests" and systematic reviews.
+
+This C4 was adopted from [https://rfc.zeromq.org/spec:42/C4/][https://rfc.zeromq.org/spec:42/C4/] under GNU GPLv3.
+
+
+Style Guide
+-----
+A standalong style guide needs to be established. 
+Elvis (https://github.com/inaka/elvis) is used for verifying 
+and for now the style guide is the rules in [elvis.config](./elvis.config).
+
 Build
 -----
 
