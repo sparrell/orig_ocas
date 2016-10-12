@@ -117,7 +117,11 @@ This is a future feature to allow those with administrative accessto get status 
 This api returns a simple “ok” in either text, html, or json. This is to serve as a keepalive is one is needed.
 
 ### openc2_handler
-This module is the heart of the simulator. When the url = /openc2 then the openc2_handler is used. It contains the following for it’s API:
+This module is the heart of the simulator. 
+When the url path = /openc2 then the openc2_handler is used. 
+Right now, only the verbose version of json is accepted. 
+It may be that different url paths will be used for the 3 different versions (eg /openc2/verbose). 
+It contains the following for it’s API:
 -	rest_init/2 - to tell cowboy this is a REST API
 -	allowed_methods/2 – to tell cowboy to only allow the POST method
 -	content_types_accepted/2 – to tell cowboy that only JSON is allowed, and to pass control to handle_json/2 when json is posted on this url 
@@ -139,10 +143,22 @@ This allows the action/target/actuator/modifier code
 to remain independent of each other. 
 For example, if a new actuator is added, it should not require changes to the actions software.
 
-This is accomplished by spinning up erlang processes for the particular action (eg deny), 
-target(eg network connection), actuator (eg network firewall), 
-and modifier (eg acknowledge). 
+This is accomplished by spinning up an erlang process to handle orchestrating that particular command 
+based on the action in that commmand.
+For example
+{action=deny, 
+target=network connection, 
+actuator=network firewall,
+and modifier=acknowledge} will spin up a deny_server 
+which will validate those other parameters 
+(eg target=network connection is a valid target for deny command)
+spinning up other processes as needed for validation (eg target process) and for simulation 
+(the particular network connection instantiation).
 These processes interact via messages to accomplish the desired simulation result.
+This architecture allows separation of the functionality 
+such that new targets can added without changing the action code.
+Similarly for new actuators.
+It also allows for the context and scope to be mimimized in the simulator to just what is needed.
 
 Although this may be overkill in these first phases of the project 
 (specification validation and one-time, single-command simulator); 
@@ -150,7 +166,7 @@ it allows the same code to scale up for the full network simulation
 including initializing the network to be simulated, playbook simulation, 
 multiple concurrent orchestrators 
 (eg looking for race conditions and time-dependent security vulnerabilities), 
-and pen testing via simulation.
+and red-teaming via simulation.
 
 The establishment of a separate erlang process for each entity 
 and each action allows the simulator to scale both the scope (processes) 
