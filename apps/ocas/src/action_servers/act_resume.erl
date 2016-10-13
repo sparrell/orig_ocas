@@ -59,7 +59,7 @@ resume_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "resume_server server got something not accounted for" ),
+            lager:debug( "resume_server got something not accounted for" ),
             resume_server(State)
     end.
 

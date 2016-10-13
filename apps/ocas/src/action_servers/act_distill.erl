@@ -59,7 +59,7 @@ distill_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "distill_server server got something not accounted for" ),
+            lager:debug( "distill_server got something not accounted for" ),
             distill_server(State)
     end.
 

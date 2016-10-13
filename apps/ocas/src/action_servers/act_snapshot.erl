@@ -59,7 +59,7 @@ snapshot_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "snapshot_server server got something not accounted for" ),
+            lager:debug( "snapshot_server got something not accounted for" ),
             snapshot_server(State)
     end.
 

@@ -59,7 +59,7 @@ detonate_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "detonate_server server got something not accounted for" ),
+            lager:debug( "detonate_server got something not accounted for" ),
             detonate_server(State)
     end.
 

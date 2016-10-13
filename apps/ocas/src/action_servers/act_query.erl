@@ -59,7 +59,7 @@ query_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "query_server server got something not accounted for" ),
+            lager:debug( "query_server got something not accounted for" ),
             query_server(State)
     end.
 

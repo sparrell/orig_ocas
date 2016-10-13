@@ -59,7 +59,7 @@ get_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "get_server server got something not accounted for" ),
+            lager:debug( "get_server got something not accounted for" ),
             get_server(State)
     end.
 

@@ -59,7 +59,7 @@ augment_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "augment_server server got something not accounted for" ),
+            lager:debug( "augment_server unaccounted for input" ),
             augment_server(State)
     end.
 

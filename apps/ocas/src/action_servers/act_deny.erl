@@ -59,7 +59,7 @@ deny_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "deny_server server got something not accounted for" ),
+            lager:debug( "deny_server got something not accounted for" ),
             deny_server(State)
     end.
 

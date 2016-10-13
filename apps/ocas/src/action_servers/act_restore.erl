@@ -59,7 +59,7 @@ restore_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "restore_server server got something not accounted for" ),
+            lager:debug( "restore_server got something not accounted for" ),
             restore_server(State)
     end.
 
