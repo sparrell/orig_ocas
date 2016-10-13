@@ -128,7 +128,9 @@ has_action(true, Req, State ) ->
     JsonMap = maps:get(json_map, State2),
     ActionBin = maps:get( <<"action">>, JsonMap ),
     lager:info("action bintext: ~p", [ActionBin] ),
-    { ActionValid, {ActionModule, ActionFunction} } = actions:is_valid_action(ActionBin),
+    { ActionValid
+    , {ActionModule, ActionFunction}
+    } = actions:is_valid_action(ActionBin),
     State3 = maps:put(action_valid, ActionValid, State2),
     State4 = maps:put(action_module, ActionModule, State3),
     State5 = maps:put(action_function, ActionFunction, State4),
