@@ -36,6 +36,7 @@ all() ->
     [ test_get_ok
     , test_get_status
     , test_post
+    , test_bad_method
     , test_post_missing_body
     , test_unsupported_media_type
     ].
@@ -198,6 +199,45 @@ test_post(_Config) ->
     %% test body is what was expected in actual command tests
 
     ok.
+
+test_bad_method(_Config) ->
+    %% test if send get when expecting post
+
+    MyPort = application:get_env(ocas, port, 8080),
+    %%lager:info("test_bad_method:port= ~p", [MyPort]),
+    {ok, Conn} = shotgun:open("localhost", MyPort),
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
+
+    Options = #{},
+
+    %% send get to openc2 which only allows posts
+    {ok, Response} = shotgun:get(Conn, "/openc2", Headers, Options),
+    lager:info("sent get instead of post, got: ~p", [Response] ),
+
+    %% verify got 405 (method not allowed) for status code
+    #{ status_code := 405 } = Response,
+
+    #{ headers := RespHeaders} = Response,
+
+    %% test header contents are correct
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
+    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
+    %% note content length is for error mesg 
+    { <<"content-length">>, <<"0">>} =  lists:keyfind( <<"content-length">>
+                                                     , 1
+                                                     , RespHeaders
+                                                     ),
+    %% it tells you what you should have used
+    {<<"allow">>, <<"POST">>} =  lists:keyfind( <<"allow">>
+                                              , 1
+                                              , RespHeaders
+                                              ),
+
+    ok.
+
 
 test_post_missing_body(_Config) ->
     %% test proper reponse to bad input (no body to html request)
