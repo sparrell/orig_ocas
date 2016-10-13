@@ -225,7 +225,7 @@ test_bad_method(_Config) ->
                                                   , RespHeaders
                                                   ),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-    %% note content length is for error mesg 
+    %% note content length is for error mesg
     { <<"content-length">>, <<"0">>} =  lists:keyfind( <<"content-length">>
                                                      , 1
                                                      , RespHeaders
