@@ -59,7 +59,7 @@ redirect_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "redirect_server server got something not accounted for" ),
+            lager:debug( "redirect_server got something not accounted for" ),
             redirect_server(State)
     end.
 

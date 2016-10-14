@@ -59,7 +59,7 @@ delay_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "delay_server server got something not accounted for" ),
+            lager:debug( "delay_server got something not accounted for" ),
             delay_server(State)
     end.
 

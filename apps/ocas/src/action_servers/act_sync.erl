@@ -59,7 +59,7 @@ sync_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "sync_server server got something not accounted for" ),
+            lager:debug( "sync_server got something not accounted for" ),
             sync_server(State)
     end.
 

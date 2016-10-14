@@ -59,7 +59,7 @@ remediate_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "remediate_server server got something not accounted for" ),
+            lager:debug( "remediate_server got something not accounted for" ),
             remediate_server(State)
     end.
 

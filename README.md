@@ -1,6 +1,8 @@
 ocas
 =====
 
+##1. Intro
+
 ocas - plural of oca, a edible tuber of Oxalis Tuberosa, a wood sorrel of the Andes; 
 or maybe it's an acronym OCAS - OpenC2 API Simulator.
 
@@ -9,8 +11,8 @@ Ocas is an OTP application written in erlang to:
 - be a viable simulator for testing OpenC2 code and scenarios
 - be a template for developing actual openc2 applications (ie replace the simulator code with code to actually perform the real function)
 
-License
------
+##2. Ground Rules
+###2.1 License
 Copyright 2016 sFractal Consulting
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,18 +27,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Code of Conduct
------
+###2.2 Code of Conduct
 TL;DR - Don't be a jerk!
 
-To make sure there are no barriers to ocas development for any developers who want to get involved, 
-a Code of Conduct was adopted and can be found at [code_of_conduct.md](./code_of_conduct.md). 
+To make sure there are no barriers to ocas development 
+for any developers who want to get involved, 
+a Code of Conduct was adopted and can be found at 
+[code_of_conduct.md](./code_of_conduct.md). 
 Please read and ahere to it.
-This Code of Conduct is adapted from the Contributor Covenant, version 1.4.0, available at 
+This Code of Conduct is adapted from the Contributor Covenant, 
+version 1.4.0, available at 
 [http://contributor-covenant.org/][http://contributor-covenant.org/].
 
-Collective Code Construction Contract (C4)
------
+##2.3 Collective Code Construction Contract (C4)
 C4 provides a standard process for contributing, evaluating and discussing improvements on software projects. 
 It defines specific technical requirements for projects 
 like a style guide, unit tests, git and similar platforms. 
@@ -49,44 +52,47 @@ use of "pull requests" and systematic reviews.
 This C4 was adopted from [https://rfc.zeromq.org/spec:42/C4/][https://rfc.zeromq.org/spec:42/C4/] under GNU GPLv3.
 
 
-Style Guide
------
+###2.4 Style Guide
 A standalong style guide needs to be established. 
 Elvis (https://github.com/inaka/elvis) is used for verifying 
 and for now the style guide is the rules in [elvis.config](./elvis.config).
 
-Build
------
+##3. Getting it running
+###3.1 Build
 
     $ rebar3 compile
 
-Build & Test
------
+###3.2 Build & Test
 
     $ rebar3 ct
 
-Vision
------
-The vision is to have this code running on a cloud server, with a protected interface, that could be used for interworking testing. See TBD for the glue to do this.
+###3.3 Release
+not done yet
 
-### Reference Implementation and Specification Validation
+##4. Vision
+The vision is to have 
+this code running on a cloud server, 
+with a protected interface, 
+that could be used for interworking testing. 
+See TBD for the glue to do this.
+
+###4.1 Reference Implementation and Specification Validation
 A primary purpose (and first use) of the simulator is to uncover bugaboos in the openC2 specification. One such has already been uncovered (the mixed case issue mentioned earlier). The openC2 specification is an attempt to simplify and standardize the command and control of all aspects of security. Alternative implementations, particularly if they can interoperate, help uncover discrepancies and different interpretations allowing the spec to be improved. Having ocas and the python reference implementation interact will go a long way towards validating the openC2 specification.
 
-### One-time Single-command Simulator
+###4.2 One-time Single-command Simulator
 The first phase of software development will focus on getting the simulator up and running and accepting a single command. The software is being architected to both allow for easily scaling to a full network simulation and for using as the base for either an orchestrator or an actuator.
 
-### Playbook Simulator
+###4.3 Playbook Simulator
 Once the one-time single-command simulator is fully functional, it will be extended to multi-command to allow playbook simulation of a full network. This will involve retaining state information which will be then extended to allow multiple orchestrators and the study of race conditions and temporal vulnerabilities.
 
-### Implementation Template
+###4.4 Implementation Template
 Another vision is for this code be forked and 'filled in' as actual working implementations.
 The software has been architected to serve as a base for production security software as either an orchestrator or an actuator.
 See TBD for one example.
 
 
 
-Organization of this software
------
+##5. Organization of this software
 
 The directory structure is follows the erlang OTP convention. Of interest:
 - ./rebar.config contains the dependencies for building
@@ -102,7 +108,12 @@ The directory structure is follows the erlang OTP convention. Of interest:
 
 The cowboy webserver is used.
 
-The start/2 module in ocas_app.erl is the callback run when the webserver is started. This module calls start_webserver() which contains the ocas specific software including a set of compiled routes which map url’s to the handler callbacks to run:
+The start/2 module in ocas_app.erl is the callback run 
+when the webserver is started. 
+This module calls start_webserver() 
+which contains the ocas specific software 
+including a set of compiled routes 
+which map url’s to the handler callbacks to run:
 - /status will run status_hander callbacks 
    * for admin to find status
 - /ok will run status_ok_handler callbacks
@@ -110,13 +121,17 @@ The start/2 module in ocas_app.erl is the callback run when the webserver is sta
 - /openc2 will run openc2_handler callbacks
    * receives the openc2 json, validates it, and executes what is in the openc2 command in the simulator
 
-### status_handler 
-This is a future feature to allow those with administrative accessto get status information about the simulator itself (as opposed to about the network being simulated which would use openC2 commands). At the current point this api takes no parameters and returns the html for “Status Works - needs more later”.
+###5.1 status_handler 
+This is a future feature to allow those with administrative access
+to get status information about the simulator itself 
+(as opposed to about the network being simulated which would use openC2 commands). 
+At the current point this api takes no parameters 
+and returns the html for “Status Works - needs more later”.
 
-### status_ok_handler
+###5.2 status_ok_handler
 This api returns a simple “ok” in either text, html, or json. This is to serve as a keepalive is one is needed.
 
-### openc2_handler
+###5.3 openc2_handler
 This module is the heart of the simulator. 
 When the url path = /openc2 then the openc2_handler is used. 
 Right now, only the verbose version of json is accepted. 
@@ -173,24 +188,33 @@ and each action allows the simulator to scale both the scope (processes)
 and the context (messaging) of the network being simulated 
 in addition to the modularizing the software that was mentioned earlier.
 
-###Actions
+###5.4 Actions
 The Actions module contains get_valid_action/1 
 which both verifies the request’s json action is valid, 
 and it spawns the process for that action. The spawned process 
 runs the function for that action in the actions module 
 (eg deny in the json action field spawns the process running the deny_server/1 function. 
 As of this report, skeleton code exists for all 37 actions defined in the openC2 specification 
-to at least verify a valid action. 
-For two of the actions, deny and mitigate, 
+to at least verify a valid action
+(but not target/actuator/modifiers that are semantically correct for that action). 
+For each of the actions
 the processes are actually spun up (albeit they only do a simple keepalive).
 
-###More on software design
+###5.5 More on software design
 See README.md in apps/ocas/src for more on the software design
 including a sunny day walk thru the modules/functions.
 
 
-Examples
------
+##6. Development Status
+Development status will attempt to be explained using test status.
+Tests that pass show functioning code.
+Work to be done is shown thru tests that are incomplete, non-existent, or failing.
+See [devstatus.md](./devstatus.md) for current status
+
+
+
+
+##7. Examples
 
 put stuff here
 

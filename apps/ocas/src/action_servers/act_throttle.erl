@@ -59,7 +59,7 @@ throttle_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "throttle_server server got something not accounted for" ),
+            lager:debug( "throttle_server got something not accounted for" ),
             throttle_server(State)
     end.
 

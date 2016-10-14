@@ -59,7 +59,7 @@ scan_server(State) ->
             stopping;
         %% handle unaccounted for message
         _ ->
-            lager:debug( "scan_server server got something not accounted for" ),
+            lager:debug( "scan_server got something not accounted for" ),
             scan_server(State)
     end.
 
