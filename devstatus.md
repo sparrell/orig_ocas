@@ -16,10 +16,11 @@ Status is:
 - P - test get to /ok correctly processed (status=200, body=ok)
 - P - test get to /status simply processed 
    * status=200, body=meaningless for now until real status code added
-- P - test get to /openc2 correctly processed (rejected with xxx return)
-- P - test no-http-body correctly processed (rejected with xxx return)
-- P - test media-type-not-json correctly processed (rejected with xxx return)
-- P - test bad json correctly processed (rejected with xxx return)
+- P - test get to /openc2 correctly processed (rejected with 405 return)
+- P - test no-http-body correctly processed (rejected with 400 return)
+- P - test media-type-not-json correctly processed (rejected with 415 return)
+- ? - test bad json correctly processed (rejected with xxx return)
+   * have code not test
 
 ## 2. Simple single command validator
 
