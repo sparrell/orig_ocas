@@ -39,6 +39,7 @@ all() ->
     , test_bad_method
     , test_post_missing_body
     , test_unsupported_media_type
+    , test_bad_json
     ].
 
 %% timeout if no reply in a minute
@@ -329,6 +330,57 @@ test_unsupported_media_type(_Config) ->
 
     ok.
 
+test_bad_json(_Config) ->
+    %% test proper reponse to bad input (unparseable json)
+
+    MyPort = application:get_env(ocas, port, 8080),
+    %%lager:info("test_post:port= ~p", [MyPort]),
+    {ok, Conn} = shotgun:open("localhost", MyPort),
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
+
+    BadJson = <<"{
+      \"action\": \"mitigate\",
+      \"target\": {
+          \"type\":\"cybox:Hostname\",
+          \"specifiers\":{\"Hostname_Value\":\"missing last bracket\"}}">>,
+    Body = BadJson,
+    Options = #{},
+
+    %% send json command to openc2
+    %%lager:info("about to send json to openc2"),
+    {ok, Response} = shotgun:post(Conn, "/openc2", Headers, Body, Options),
+    lager:info("sent json, got: ~p", [Response] ),
+
+    %% verify got 400 (bad request) for status code
+    #{ status_code := 400 } = Response,
+    %%lager:info("status = ~p", [RespStatus]),
+
+    #{ headers := RespHeaders} = Response,
+    %%lager:info("headers = ~p", [RespHeaders]),
+    #{ body := RespBody } = Response,
+    lager:info("body = ~p", [RespBody]),
+
+    %% test header contents are correct
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
+    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
+    %% note content length is for error mesg "Missing Body."
+    { <<"content-length">>, <<"8">>} =  lists:keyfind( <<"content-length">>
+                                                      , 1
+                                                      , RespHeaders
+                                                      ),
+    %% not sure why error response is in html?
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind( <<"content-type">>
+                                                           , 1
+                                                           , RespHeaders
+                                                           ),
+
+    %% test body is what was expected
+    RespBody = <<"Bad JSON">>,
+
+    ok.
 %%%%%%%%%%%%%%%%%%%% Utilities
 
 %% utility to save putting this in each test

@@ -20,8 +20,7 @@ Status is:
 - P - test get to /openc2 correctly processed (rejected with 405 return)
 - P - test no-http-body correctly processed (rejected with 400 return)
 - P - test media-type-not-json correctly processed (rejected with 415 return)
-- ? - test bad json correctly processed (rejected with xxx return)
-   * have code not test
+- P - test bad json correctly processed (rejected with 400 return)
 
 ## 2. Simple single command validator
 
