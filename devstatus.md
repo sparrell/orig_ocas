@@ -20,13 +20,13 @@ Status is:
 - P - test no-http-body correctly processed (rejected with xxx return)
 - P - test media-type-not-json correctly processed (rejected with xxx return)
 - P - test bad json correctly processed (rejected with xxx return)
-- P - test action=scan 'simply' processed
-   * 200 return after validated action process spun up
-   * but without target/actuator/modifier semantics
 
 ## 2. Simple single command validator
 
 ### 2.1 Action Sanity
+- P - test action=scan 'simply' processed
+   * 200 return after validated action process spun up
+   * but without target/actuator/modifier semantics
 - N - test action=nonsense correctly processed (rejected with xxx return)
    * note this is not exhautive test of all invalid actions
 - ? -test all 37 actions 'simply' processed 
