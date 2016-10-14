@@ -11,7 +11,8 @@ Status is:
 - N - tests not written
 - ? - some other state that needs explaining
 
-Status:
+## 1. Sanity
+
 - P - test get to /ok correctly processed (status=200, body=ok)
 - P - test get to /status simply processed 
    * status=200, body=meaningless for now until real status code added
@@ -22,17 +23,27 @@ Status:
 - P - test action=scan 'simply' processed
    * 200 return after validated action process spun up
    * but without target/actuator/modifier semantics
+
+## 2. Simple single command validator
+
+### 2.1 Action Sanity
 - N - test action=nonsense correctly processed (rejected with xxx return)
    * note this is not exhautive test of all invalid actions
 - ? -test all 37 actions 'simply' processed 
    * 200 return after validated action process spun up
    * but without target/actuator/modifier semantics
    * functionality exits but tests not written yet
+
+### 2.2 Target Sanity
 - N - test target=network connection simply processed
 - N - test (first few) targets simply processed
+
+### 2.3 Actuator Sanity
 - N - test actuator=network-firewall simply processed
 - N - test (first few) actuators simply processed
 - N - test (first one, few) modifiers simply processed
+
+### 2.4 Command Specifics
 - N - test following command and response
    * action =  deny
    * target = network connection
@@ -46,4 +57,13 @@ Status:
 - N - test all X targets simply processed
 - N - test all X actuators simply processed
 - N - test all X modifiers simply processed
+
+## 3. Simple single command simulator
+what goes here?
+
+## 4. Simple single command simulator
+what goes here?
+
+## 5. Playbook simulator
+what goes here?
 
