@@ -25,10 +25,16 @@ Status is:
 
 ### 2.1 Action Sanity
 - ? - test all actions 'simply' processed
-   * 200 return after validated action process spun up
-   * but without target/actuator/modifier semantics
-   * P - action=scan
-   * N - action= remaining 36 actions
+   * simply processed has two tests
+      + valid action/target
+         - 200 return after validated action process spun up
+      + valid action, no target
+         - 200 return but has_target=false in reply
+         - ie worked since semantic check not in yet
+   * P - action =
+      + deny
+      + scan
+   * N - action= remaining 35 actions
 - P - test action=nonsense correctly processed (rejected with 400 return)
    * note this is not exhautive test of all invalid actions
 
@@ -65,3 +71,4 @@ what goes here?
 ## 5. Playbook simulator
 what goes here?
 
+-license ApacheV2 
