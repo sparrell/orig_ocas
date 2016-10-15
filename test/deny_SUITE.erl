@@ -31,6 +31,10 @@
 %% required for common_test to work
 -include_lib("common_test/include/ct.hrl").
 
+%% includes of common test json data
+-include_lib("./include/deny01.hrl").
+-include_lib("./include/deny_wo_target.hrl").
+
 %% tests to run
 all() ->
     [ test_deny
@@ -68,27 +72,7 @@ test_deny(_Config) ->
 
     Options = #{},
 
-    Json = <<"{
-\"action\": \"deny\",
-\"target\": {
-    \"type\": \"cybox:Network_Connection\",
-    \"specifiers\": {
-        \"Layer4Protocol\": \"UDP\",
-        \"DestinationSocketAddress\": {
-            \"IP_Address\": {\"Address_Value\": \"1.2.3.4\"},
-            \"Port\": {\"Port_Value\": 443}
-            }
-        }
-    },
-\"actuator\": {
-    \"type\": \"network-router\",
-    \"specifiers\": {\"port\": \"2\"}
-    },
-\"modifiers\": {
-    \"response\": \"ack\",
-    \"where\": \"perimeter\"
-    }
-}">>,
+    Json = ?JSON_DENY_01,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -134,14 +118,7 @@ test_bad_deny(_Config) ->
     Options = #{},
 
     %% Deny requires a target and a target - leave off target and it should fail
-    Json = <<"{ \"action\": \"deny\",
-               \"actuator\": {
-                  \"type\": \"network-scanner\",
-                  \"specifiers\": \"scanner01\"
-                           },
-               \"modifiers\": { \"response\": \"ack\",
-                              \"where\": \"perimeter\"}
-             }">>,
+    Json = ?JSON_DENY_WO_TARGET,
 
     %% validate the json
     true = jsx:is_json(Json),
