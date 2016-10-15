@@ -40,7 +40,7 @@
 %% API functions
 %%====================================================================
 
--spec start_link() -> 'ignore' | {'error', _} | {'ok', pid()}.
+
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
