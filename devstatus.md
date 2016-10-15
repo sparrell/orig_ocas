@@ -1,5 +1,3 @@
-
-
 #Understanding Status thru tests
 This section is an attempt to explain what is implemented so far 
 and what needs to be done next.
@@ -26,7 +24,7 @@ Status is:
 ## 2. Simple single command validator
 
 ### 2.1 Action Sanity
-- ? - test action=scan 'simply' processed
+- ? - test all actions 'simply' processed
    * 200 return after validated action process spun up
    * but without target/actuator/modifier semantics
    * P - action=scan
