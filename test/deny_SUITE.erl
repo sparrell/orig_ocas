@@ -72,7 +72,7 @@ test_deny(_Config) ->
 
     Options = #{},
 
-    Json = ?JSON_DENY_01,
+    Json = ?DENY01,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -118,7 +118,7 @@ test_bad_deny(_Config) ->
     Options = #{},
 
     %% Deny requires a target and a target - leave off target and it should fail
-    Json = ?JSON_DENY_WO_TARGET,
+    Json = ?DENYWOTARGET,
 
     %% validate the json
     true = jsx:is_json(Json),

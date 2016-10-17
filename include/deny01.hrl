@@ -5,7 +5,7 @@
 %%%-------------------------------------------------------------------
 
 %%  json for deny
--define(JSON_DENY_01, <<"{
+-define(DENY01, <<"{
 \"action\": \"deny\",
 \"target\": {
     \"type\": \"cybox:Network_Connection\",
