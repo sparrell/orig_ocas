@@ -65,10 +65,7 @@ Status is:
 ## 3. Simple single command simulator
 what goes here?
 
-## 4. Simple single command simulator
-what goes here?
-
-## 5. Playbook simulator
+## 4. Playbook simulator
 what goes here?
 
 -license ApacheV2 
