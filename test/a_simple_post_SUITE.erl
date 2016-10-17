@@ -31,6 +31,11 @@
 %% required for common_test to work
 -include_lib("common_test/include/ct.hrl").
 
+%% JSON for input tests
+-include_lib("./include/mitigate01.hrl").
+-include_lib("./include/nonsense_action.hrl").
+-include_lib("./include/bad_json.hrl").
+
 %% tests to run
 all() ->
     [ test_get_ok
@@ -149,15 +154,12 @@ test_get_status(_Config) ->
 
 test_post(_Config) ->
     MyPort = application:get_env(ocas, port, 8080),
-    %%lager:info("test_post:port= ~p", [MyPort]),
+
     {ok, Conn} = shotgun:open("localhost", MyPort),
     Headers = [ {<<"content-type">>, <<"application/json">>} ],
 
-    SomeJson = <<"{
-      \"action\": \"mitigate\",
-      \"target\": {
-          \"type\":\"cybox:Hostname\",
-          \"specifiers\":{\"Hostname_Value\":\"cdn.badco.org\"}}}">>,
+     SomeJson = ?MITIGATE01,
+
     %% validate Json
     true = jsx:is_json(SomeJson),
 
@@ -187,7 +189,7 @@ test_post(_Config) ->
                                           , RespHeaders
                                           ),
     %%   note content length is likely to change
-    { <<"content-length">>, <<"522">>} =  lists:keyfind(<<"content-length">>
+    { <<"content-length">>, <<"506">>} =  lists:keyfind(<<"content-length">>
                                                                  , 1
                                                                  , RespHeaders
                                                                  ),
@@ -339,11 +341,8 @@ test_bad_json(_Config) ->
     {ok, Conn} = shotgun:open("localhost", MyPort),
     Headers = [ {<<"content-type">>, <<"application/json">>} ],
 
-    BadJson = <<"{
-      \"action\": \"mitigate\",
-      \"target\": {
-          \"type\":\"cybox:Hostname\",
-          \"specifiers\":{\"Hostname_Value\":\"missing last bracket\"}}">>,
+    BadJson = ?BADJSON,
+
     Body = BadJson,
     Options = #{},
 
@@ -392,11 +391,8 @@ test_bad_action(_Config) ->
     Headers = [ {<<"content-type">>, <<"application/json">>} ],
 
     %% give an invalid action
-    SomeJson = <<"{
-      \"action\": \"nonsense\",
-      \"target\": {
-          \"type\":\"cybox:Hostname\",
-          \"specifiers\":{\"Hostname_Value\":\"cdn.badco.org\"}}}">>,
+    SomeJson = ?NONSENSE,
+
     %% validate Json
     true = jsx:is_json(SomeJson),
 

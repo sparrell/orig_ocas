@@ -4,16 +4,12 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%%  json for deny
--define(DENYWOTARGET, <<"{
-\"action\": \"deny\",
-\"actuator\": {
-    \"type\": \"network-router\",
-    \"specifiers\": {\"port\": \"2\"}
-    },
-\"modifiers\": {
-    \"response\": \"ack\",
-    \"where\": \"perimeter\"
+%%  illegal action in json
+-define(NONSENSE, <<"{
+\"action\": \"nonsense\",
+\"target\": {
+    \"type\":\"cybox:Hostname\",
+    \"specifiers\":{\"Hostname_Value\":\"cdn.badco.org\"}
     }
 }">>).
 
