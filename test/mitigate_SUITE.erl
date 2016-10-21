@@ -117,7 +117,7 @@ test_bad_mitigate(_Config) ->
 
     Options = #{},
 
-    %% Mitigate requires a target and a target 
+    %% Mitigate requires a target and a target
     %%      leave off target and it should fail
     Json = ?MITIGATEWOTARGET,
 
