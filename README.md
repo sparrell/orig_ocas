@@ -211,10 +211,11 @@ Tests that pass show functioning code.
 Work to be done is shown thru tests that are incomplete, non-existent, or failing.
 See [devstatus.md](./devstatus.md) for current status
 
+##7. Specification Coverage
+Another way to consider status is how much of the specification is covered by what has so far been 
+implemented. See [specstatus.md](specstatus.md) for current status of this.
 
-
-
-##7. Examples
+##8. Examples
 
 put stuff here
 

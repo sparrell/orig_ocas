@@ -16,11 +16,11 @@
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
-%% @doc test scan action
+%% @doc test mitigate action
 %% @end
 %%%-------------------------------------------------------------------
 
--module(scan_SUITE).
+-module(mitigate_SUITE).
 -author("Duncan Sparrell").
 -copyright("2016, sFractal Consulting, LLC").
 -license(apache2).
@@ -32,13 +32,13 @@
 -include_lib("common_test/include/ct.hrl").
 
 %% test data
--include_lib("./include/scan01.hrl").
--include_lib("./include/scan_wo_target.hrl").
+-include_lib("./include/mitigate01.hrl").
+-include_lib("./include/mitigate_wo_target.hrl").
 
 %% tests to run
 all() ->
-    [ test_scan
-    , test_bad_scan
+    [ test_mitigate
+    , test_bad_mitigate
     ].
 
 %% timeout if no reply in a minute
@@ -63,7 +63,7 @@ init_per_suite(Config) ->
 
     Config.
 
-test_scan(_Config) ->
+test_mitigate(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
                  ],
@@ -72,7 +72,7 @@ test_scan(_Config) ->
 
     Options = #{},
 
-    Json = ?SCAN01,
+    Json = ?MITIGATE01,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -87,11 +87,11 @@ test_scan(_Config) ->
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_scan">>}
-                        , {<<"action_function">>, <<"scan_server">>}
+                        , {<<"action_module">>, <<"act_mitigate">>}
+                        , {<<"action_function">>, <<"mitigate_server">>}
                         , {<<"action_valid">>, true}
-                        , {<<"has_actuator">>, true}
-                        , {<<"has_modifiers">>, true}
+                        , {<<"has_actuator">>, false}
+                        , {<<"has_modifiers">>, false}
                         , {<<"has_target">>, true}
                         , {<<"action_keepalive">>, true}
                         ],
@@ -108,7 +108,7 @@ test_scan(_Config) ->
     ok.
 
 
-test_bad_scan(_Config) ->
+test_bad_mitigate(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
                  ],
@@ -117,8 +117,9 @@ test_bad_scan(_Config) ->
 
     Options = #{},
 
-    %% Scan requires a target and a target - leave off target and it should fail
-    Json = ?SCANWOTARGET,
+    %% Mitigate requires a target and a target
+    %%      leave off target and it should fail
+    Json = ?MITIGATEWOTARGET,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -133,11 +134,11 @@ test_bad_scan(_Config) ->
     %% but will get 'false' for has_actuator
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_scan">>}
-                        , {<<"action_function">>, <<"scan_server">>}
+                        , {<<"action_module">>, <<"act_mitigate">>}
+                        , {<<"action_function">>, <<"mitigate_server">>}
                         , {<<"action_valid">>, true}
-                        , {<<"has_actuator">>, true}
-                        , {<<"has_modifiers">>, true}
+                        , {<<"has_actuator">>, false}
+                        , {<<"has_modifiers">>, false}
                         , {<<"has_target">>, false}
                         , {<<"action_keepalive">>, true}
                         ],
