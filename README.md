@@ -66,7 +66,14 @@ and for now the style guide is the rules in [elvis.config](./elvis.config).
 
     $ rebar3 ct
 
-###3.3 Release
+###3.3 Pull Requests
+As part of the quality checks on merging, github pull requests automagically run gadgetci which:
+- validates the code compiles error free
+- runs elvis
+- runs xref
+- runs dialyzer
+
+###3.4 Release
 not done yet
 
 ##4. Vision
@@ -219,3 +226,5 @@ implemented. See [specstatus.md](specstatus.md) for current status of this.
 
 put stuff here
 
+##9. Want to help?
+Find a bug? or something missing? or something dumb? Want to complete more features? If yes to any of these then create an issue. Or ideally send a pull request with the changes you'd like.
