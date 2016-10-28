@@ -50,7 +50,7 @@ is_valid_action(Action) ->
 
     ValidActions =
         #{ <<"alert">>        => { act_alert, alert_server}
-         ,  <<"allow">>       => { act_allow, allow_server }
+         ,  <<"allow">>       => { act_allow, gen_server }
          ,  <<"augment">>     => { act_augment, augment_server }
          ,  <<"cancel">>      => { act_cancel, cancel_server }
          ,  <<"contain">>     => { act_contain, contain_server }

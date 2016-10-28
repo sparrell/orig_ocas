@@ -153,6 +153,37 @@ check_valid_action( false, _ActionModule, _ActionFunction, Req, State ) ->
     %%   is this correct return tuple?
     {ok, Req2, State};
 
+check_valid_action( true, ActionModule, gen_server, Req, State ) ->
+    %% valid action, action server used gen_server behavior
+    %%   once all old actions cleaned up, then gen_server can be removed
+    %%   and this can be end of function head (ie beyond is the old stuff
+    lager:info("check_valid_action: good gen_svr action: ~p", [ActionModule] ),
+
+    %%   check existence of target, actuator, modifiers
+    %%           for now just add them to State
+    %%           figure out how to deal with them later
+    %%   and then spin up action process
+
+    JsonMap = maps:get(json_map, State),
+    TargetKeyExists = maps:is_key( <<"target">>, JsonMap ),
+    State2 = maps:put(has_target, TargetKeyExists, State),
+    ActuatorKeyExists = maps:is_key( <<"actuator">>, JsonMap ),
+    State3 = maps:put(has_actuator, ActuatorKeyExists, State2),
+    ModifiersKeyExists = maps:is_key( <<"modifiers">>, JsonMap ),
+    State4 = maps:put(has_modifiers, ModifiersKeyExists, State3),
+
+    %% spin up the process
+    ActionPid = ActionModule:start(State4),
+    lager:debug("got past ~p spin up ~p", [ActionModule, ActionPid]),
+    lager:debug("State4: ~p ", [State4]),
+
+    %% test keep alive - should get {keepalive_received, allow_server}
+    ActionKeepAlive = ActionModule:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    send_response(Req, State4);
+
 check_valid_action( true, ActionModule, ActionFunction, Req, State ) ->
     %% valid action
     %%   check existence of target, actuator, modifiers
