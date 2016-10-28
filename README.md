@@ -137,15 +137,15 @@ When the url path = /openc2 then the openc2_handler is used.
 Right now, only the verbose version of json is accepted. 
 It may be that different url paths will be used for the 3 different versions (eg /openc2/verbose). 
 It contains the following for it’s API:
--	rest_init/2 - to tell cowboy this is a REST API
--	allowed_methods/2 – to tell cowboy to only allow the POST method
--	content_types_accepted/2 – to tell cowboy that only JSON is allowed, and to pass control to handle_json/2 when json is posted on this url 
--	handle_json/2 (and it’s helper routines) :
-o	verifies there is a body in the http request
-o	decodes and verifies the json
-o	spawns the necessary processes for action/target/actuator/modifier (more on this further down)
-o	does the simulation
-o	sends the appropriate http response 
+- rest_init/2 - to tell cowboy this is a REST API
+- allowed_methods/2 – to tell cowboy to only allow the POST method
+- content_types_accepted/2 – to tell cowboy that only JSON is allowed, and to pass control to handle_json/2 when json is posted on this url 
+- handle_json/2 (and it’s helper routines) :
+  * verifies there is a body in the http request
+  * decodes and verifies the json
+  * spawns the necessary processes for action/target/actuator/modifier (more on this further down)
+  * does the simulation
+  * sends the appropriate http response 
 
 The openC2 language is in JSON and consists of 
 two mandatory top-level fields (action, target) 
