@@ -97,7 +97,7 @@ test_deny(_Config) ->
                         ],
 
     %% send request, test response
-    send_recieve( ReqHeaders       % to send
+    helper:send_recieve( ReqHeaders       % to send
                 , Options          % to send
                 , ReqBody          % to send
                 , Url              % to send
@@ -143,7 +143,7 @@ test_bad_deny(_Config) ->
                         ],
 
     %% send request, test response
-    send_recieve( ReqHeaders       % to send
+    helper:send_recieve( ReqHeaders       % to send
                 , Options          % to send
                 , ReqBody          % to send
                 , Url              % to send
@@ -153,72 +153,3 @@ test_bad_deny(_Config) ->
 
 
     ok.
-
-
-%%%%%%%%%%%%%%%%%%%% Utilities
-
-%% utility to save putting this in each test
-send_recieve( ReqHeaders          % to send
-            , Options          % to send
-            , ReqBody          % to send
-            , Url              % to send
-            , ExpectedStatus  % test get this received
-            , ExpectedJsonPairs   % list of key/values in json
-            ) ->
-
-    MyPort = application:get_env(ocas, port, 8080),
-    %%lager:info("test_post:port= ~p", [MyPort]),
-    {ok, Conn} = shotgun:open("localhost", MyPort),
-    {ok, Response} = shotgun:post(Conn, Url, ReqHeaders, ReqBody, Options),
-    lager:info("response = ~p", [Response]),
-
-    %% get status code of response
-    #{ status_code := RespStatus } = Response,
-    %%lager:info("status = ~p", [RespStatus]),
-    %% test what received was what was expected
-    ExpectedStatus = RespStatus,
-
-    %% get headers
-    #{ headers := RespHeaders } = Response,
-    %%lager:info("headers = ~p", [RespHeaders]),
-
-    %% verify headers
-    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
-                                                  , 1
-                                                  , RespHeaders
-                                                  ),
-    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-
-    %% check if has body
-    #{ body := RespBody } = Response,
-
-    %% check body is json
-    true = jsx:is_json(RespBody),
-
-    %% decode json into erlang map
-    JsonMap = jsx:decode( RespBody, [return_maps] ),
-
-    lager:info("ExpectedJsonPairs: ~p", [ExpectedJsonPairs]),
-    lager:info("JsonMap: ~p", [JsonMap]),
-
-    %% check key/value pairs are as expected
-    check_map(ExpectedJsonPairs, JsonMap),
-
-    %% return
-    ok.
-
-check_map( [], _JsonMap ) ->
-    %% done since list is empty
-    ok;
-
-check_map( [ {Key, Value} | RestOfExpectedJsonPairs ], JsonMap ) ->
-    %% Grab  first item in list and verify
-    lager:info("Testing Key/Value: ~p/~p", [Key, Value]),
-
-    true = maps:is_key(Key, JsonMap),
-    Value = maps:get(Key, JsonMap),
-
-    %% recurse thru remaining items in list
-    check_map( RestOfExpectedJsonPairs, JsonMap).
-
-

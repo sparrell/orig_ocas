@@ -38,8 +38,6 @@
 -author("Duncan Sparrell").
 -license("Apache 2.0").
 
-%-export([ allow_server/1 ]).
-
 %% gen_server callbacks
 -export([ init/1
         , handle_call/3
@@ -107,27 +105,3 @@ code_change(_OldVsn, State, _Extra) ->
     %% No change planned. The function is there for behaviour sanity,
     %% but will not be used. Only a version on the next
     {ok, State}.
-
-allow_server(State) ->
-    %% separate process to handle allow action
-
-    %% initialize
-    lager:debug( "starting allow_server with ~p", [State] ),
-
-    %% await messages, then process them
-    receive
-        %% keepalive (for testing)
-        { From, keepalive } ->
-            lager:debug( "allow_server got keepalive" ),
-            From!{keepalive_received, allow_server},
-            allow_server(State);
-        %% stop server - note it doesnt loop
-        stop_server ->
-            lager:debug( "allow_server stopping" ),
-            stopping;
-        %% handle unaccounted for message
-        _ ->
-            lager:debug( "allow_server: got something unknown" ),
-            allow_server(State)
-    end.
-

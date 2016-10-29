@@ -16,11 +16,11 @@
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
-%% @doc test allow action
+%% @doc test augment action
 %% @end
 %%%-------------------------------------------------------------------
 
--module(allow_SUITE).
+-module(augment_SUITE).
 -author("Duncan Sparrell").
 -copyright("2016, sFractal Consulting, LLC").
 -license(apache2).
@@ -32,13 +32,13 @@
 -include_lib("common_test/include/ct.hrl").
 
 %% includes of common test json data
--include_lib("./include/allow01.hrl").
--include_lib("./include/allow_wo_target.hrl").
+-include_lib("./include/augment01.hrl").
+-include_lib("./include/augment_wo_target.hrl").
 
 %% tests to run
 all() ->
-    [ test_allow
-    , test_bad_allow
+    [ test_augment
+    , test_bad_augment
     ].
 
 %% timeout if no reply in a minute
@@ -60,7 +60,7 @@ init_per_suite(Config) ->
 
     Config.
 
-test_allow(_Config) ->
+test_augment(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
                  ],
@@ -69,7 +69,7 @@ test_allow(_Config) ->
 
     Options = #{},
 
-    Json = ?ALLOW01,
+    Json = ?AUGMENT01,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -84,7 +84,7 @@ test_allow(_Config) ->
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_allow">>}
+                        , {<<"action_module">>, <<"act_augment">>}
                         , {<<"action_function">>, <<"gen_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
@@ -104,7 +104,7 @@ test_allow(_Config) ->
     ok.
 
 
-test_bad_allow(_Config) ->
+test_bad_augment(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
                  ],
@@ -113,9 +113,9 @@ test_bad_allow(_Config) ->
 
     Options = #{},
 
-    %% Allow requires a target and a target
+    %% augment requires a target and a target
     %%     leave off target and it should fail
-    Json = ?ALLOWWOTARGET,
+    Json = ?AUGMENTWOTARGET,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -130,7 +130,7 @@ test_bad_allow(_Config) ->
     %% but will get 'false' for has_target
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_allow">>}
+                        , {<<"action_module">>, <<"act_augment">>}
                         , {<<"action_function">>, <<"gen_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
@@ -149,3 +149,4 @@ test_bad_allow(_Config) ->
 
 
     ok.
+

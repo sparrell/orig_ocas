@@ -4,11 +4,13 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%% json for bad allow
-%% Allow requires a target and a target
-%%    leave off target and it should fail
--define(ALLOWWOTARGET, <<"{
-\"action\": \"allow\",
+%%  json for augment
+-define(AUGMENT01, <<"{
+\"action\": \"augment\",
+\"target\": { 
+    \"type\": \"cybox:Device\",
+    \"specifiers\": \"NetworkFirewall\"
+    },
 \"actuator\": {
     \"type\": \"network-firewall\",
     \"specifiers\": \"fw01\"
