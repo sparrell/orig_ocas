@@ -4,12 +4,15 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%%  json for mitigate
--define(MITIGATE01, <<"{
-\"action\": \"mitigate\",
-\"target\": {
-    \"type\":\"cybox:Hostname\",
-    \"specifiers\":{\"Hostname_Value\":\"cdn.badco.org\"}
+%%  json for augment
+-define(AUGMENTWOTARGET, <<"{
+\"action\": \"augment\",
+\"actuator\": {
+    \"type\": \"network-firewall\",
+    \"specifiers\": \"fw01\"
+    },
+\"modifiers\": {
+    \"response\": \"ack\",
+    \"where\": \"perimeter\"
     }
 }">>).
-

@@ -1,0 +1,11 @@
+{
+"action": "allow",
+"actuator": {
+    "type": "network-firewall",
+    "specifiers": "fw01"
+    },
+"modifiers": {
+    "response": "ack",
+    "where": "perimeter"
+    }
+}

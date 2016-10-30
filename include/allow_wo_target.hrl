@@ -4,16 +4,14 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%%  json for scan
--define(SCAN01, <<"{
-\"action\": \"scan\",
-\"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkScanner\"
-    },
+%% json for bad allow
+%% Allow requires a target and a target
+%%    leave off target and it should fail
+-define(ALLOWWOTARGET, <<"{
+\"action\": \"allow\",
 \"actuator\": {
-    \"type\": \"network-scanner\",
-    \"specifiers\": \"scanner01\"
+    \"type\": \"network-firewall\",
+    \"specifiers\": \"fw01\"
     },
 \"modifiers\": {
     \"response\": \"ack\",

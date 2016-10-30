@@ -1,6 +1,6 @@
 %%%-------------------------------------------------------------------
 %%% @author Duncan Sparrell
-%%% @copyright (C) 2015, sFractal Consulting LLC
+%%% @copyright (C) 2016, sFractal Consulting LLC
 %%% 
 %%%-------------------------------------------------------------------
 

@@ -16,11 +16,11 @@
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
-%% @doc test mitigate action
+%% @doc test augment action
 %% @end
 %%%-------------------------------------------------------------------
 
--module(mitigate_SUITE).
+-module(augment_SUITE).
 -author("Duncan Sparrell").
 -copyright("2016, sFractal Consulting, LLC").
 -license(apache2).
@@ -31,14 +31,14 @@
 %% required for common_test to work
 -include_lib("common_test/include/ct.hrl").
 
-%% test data
--include_lib("./include/mitigate01.hrl").
--include_lib("./include/mitigate_wo_target.hrl").
+%% includes of common test json data
+-include_lib("./include/augment01.hrl").
+-include_lib("./include/augment_wo_target.hrl").
 
 %% tests to run
 all() ->
-    [ test_mitigate
-    , test_bad_mitigate
+    [ test_augment
+    , test_bad_augment
     ].
 
 %% timeout if no reply in a minute
@@ -48,10 +48,8 @@ suite() ->
 %% setup config parameters
 init_per_suite(Config) ->
     {ok, _AppList} = application:ensure_all_started(lager),
-    %%lager:info("AppList: ~p~n", [AppList]),
 
     {ok, _AppList2} = application:ensure_all_started(shotgun),
-    %%lager:info("AppList2: ~p~n", [AppList2]),
 
     %% since ct doesn't read sys.config, set configs here
     application:set_env(ocas, port, 8080),
@@ -59,11 +57,10 @@ init_per_suite(Config) ->
 
     %% start application
     {ok, _AppList3} = application:ensure_all_started(ocas),
-    %%lager:info("AppList3: ~p~n", [AppList3]),
 
     Config.
 
-test_mitigate(_Config) ->
+test_augment(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
                  ],
@@ -72,7 +69,7 @@ test_mitigate(_Config) ->
 
     Options = #{},
 
-    Json = ?MITIGATE01,
+    Json = ?AUGMENT01,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -87,13 +84,12 @@ test_mitigate(_Config) ->
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_mitigate">>}
-                        , {<<"action_function">>, <<"mitigate_server">>}
+                        , {<<"action_module">>, <<"act_augment">>}
+                        , {<<"action_function">>, <<"gen_server2">>}
                         , {<<"action_valid">>, true}
-                        , {<<"has_actuator">>, false}
-                        , {<<"has_modifiers">>, false}
+                        , {<<"has_actuator">>, true}
+                        , {<<"has_modifiers">>, true}
                         , {<<"has_target">>, true}
-                        , {<<"action_keepalive">>, true}
                         ],
 
     %% send request, test response
@@ -108,7 +104,7 @@ test_mitigate(_Config) ->
     ok.
 
 
-test_bad_mitigate(_Config) ->
+test_bad_augment(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
                  ],
@@ -117,9 +113,9 @@ test_bad_mitigate(_Config) ->
 
     Options = #{},
 
-    %% Mitigate requires a target and a target
-    %%      leave off target and it should fail
-    Json = ?MITIGATEWOTARGET,
+    %% augment requires a target and a target
+    %%     leave off target and it should fail
+    Json = ?AUGMENTWOTARGET,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -131,16 +127,15 @@ test_bad_mitigate(_Config) ->
     %%    for now since not doing action specific semantic checks yet
     ExpectedStatus = 200,
 
-    %% but will get 'false' for has_actuator
+    %% but will get 'false' for has_target
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_mitigate">>}
-                        , {<<"action_function">>, <<"mitigate_server">>}
+                        , {<<"action_module">>, <<"act_augment">>}
+                        , {<<"action_function">>, <<"gen_server2">>}
                         , {<<"action_valid">>, true}
-                        , {<<"has_actuator">>, false}
-                        , {<<"has_modifiers">>, false}
+                        , {<<"has_actuator">>, true}
+                        , {<<"has_modifiers">>, true}
                         , {<<"has_target">>, false}
-                        , {<<"action_keepalive">>, true}
                         ],
 
     %% send request, test response
@@ -154,3 +149,4 @@ test_bad_mitigate(_Config) ->
 
 
     ok.
+
