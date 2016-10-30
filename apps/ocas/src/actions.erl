@@ -38,6 +38,7 @@
 
 -export([ is_valid_action/1
         , spawn_action/3
+        , spinup/3
         ]).
 
 is_valid_action(Action) ->
@@ -50,8 +51,8 @@ is_valid_action(Action) ->
 
     ValidActions =
         #{ <<"alert">>        => { act_alert, alert_server}
-         ,  <<"allow">>       => { act_allow, gen_server }
-         ,  <<"augment">>     => { act_augment, gen_server }
+         ,  <<"allow">>       => { act_allow, gen_server2 }
+         ,  <<"augment">>     => { act_augment, gen_server2 }
          ,  <<"cancel">>      => { act_cancel, cancel_server }
          ,  <<"contain">>     => { act_contain, contain_server }
          ,  <<"copy">>        => { act_copy, copy_server }
@@ -122,4 +123,40 @@ spawn_action( ActionModule, ActionServer, Json ) ->
     %% return whether keepalive worked, and spawned process id
     { KeepAliveWorked, ActionProcess}.
 
+%% spawn action servers
+spinup( act_allow,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_allow:start(State),
 
+    %% check with keep alive
+    ActionKeepAlive = act_allow:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    send_response(Pid, Req, State);
+
+spinup( act_augment,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_augment:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_augment:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    send_response(Pid, Req, State);
+
+spinup( _ActionSvr,  Req, State ) ->
+    %% no function for this action so reply accordingly
+    {ok, Req2} = cowboy_req:reply(400, [], <<"Missing action function">>, Req),
+    {ok, Req2, State}.
+
+send_response(Pid, Req, State) ->
+    %% for now just reply with state as json
+    ReplyBody = jsx:encode( State ),
+
+    State2 = maps:put(pid, Pid, State),
+
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
+    {ok, Req2} = cowboy_req:reply(200, Headers, ReplyBody, Req),
+    {ok, Req2, State2}.

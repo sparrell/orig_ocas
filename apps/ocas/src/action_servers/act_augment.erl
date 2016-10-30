@@ -49,13 +49,13 @@
 
 %% interface calls
 -export([ start/1
-        , stop/0 
-        , keepalive/0 
+        , stop/0
+        , keepalive/0
         ]).
 
 %% This routine API handles all the actions that can be taken
 
-start(State) -> 
+start(State) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [State], []).
 
 stop() ->

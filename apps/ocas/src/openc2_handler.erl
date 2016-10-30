@@ -153,11 +153,11 @@ check_valid_action( false, _ActionModule, _ActionFunction, Req, State ) ->
     %%   is this correct return tuple?
     {ok, Req2, State};
 
-check_valid_action( true, ActionModule, gen_server, Req, State ) ->
+check_valid_action( true, ActionModule, gen_server2, Req, State ) ->
     %% valid action, action server used gen_server behavior
     %%   once all old actions cleaned up, then gen_server can be removed
     %%   and this can be end of function head (ie beyond is the old stuff
-    lager:info("check_valid_action: good gen_svr action: ~p", [ActionModule] ),
+    lager:info("check_valid_action: good gen_svr2 action: ~p", [ActionModule] ),
 
     %%   check existence of target, actuator, modifiers
     %%           for now just add them to State
@@ -173,16 +173,8 @@ check_valid_action( true, ActionModule, gen_server, Req, State ) ->
     State4 = maps:put(has_modifiers, ModifiersKeyExists, State3),
 
     %% spin up the process
-    ActionPid = ActionModule:start(State4),
-    lager:debug("got past ~p spin up ~p", [ActionModule, ActionPid]),
-    lager:debug("State4: ~p ", [State4]),
-
-    %% test keep alive - should get {keepalive_received, allow_server}
-    ActionKeepAlive = ActionModule:keepalive(),
-    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
-
-    %% tail end recurse
-    send_response(Req, State4);
+    actions:spinup(ActionModule, Req, State4);
+    %% eventually refactor this to just on bin and catch fail if no function
 
 check_valid_action( true, ActionModule, ActionFunction, Req, State ) ->
     %% valid action
@@ -219,6 +211,7 @@ send_response(Req, State) ->
 
     Headers = [ {<<"content-type">>, <<"application/json">>} ],
     cowboy_req:reply(200, Headers, ReplyBody, Req).
+
 
 
 

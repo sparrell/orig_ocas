@@ -85,7 +85,7 @@ test_allow(_Config) ->
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
                         , {<<"action_module">>, <<"act_allow">>}
-                        , {<<"action_function">>, <<"gen_server">>}
+                        , {<<"action_function">>, <<"gen_server2">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
@@ -131,7 +131,7 @@ test_bad_allow(_Config) ->
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
                         , {<<"action_module">>, <<"act_allow">>}
-                        , {<<"action_function">>, <<"gen_server">>}
+                        , {<<"action_function">>, <<"gen_server2">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
