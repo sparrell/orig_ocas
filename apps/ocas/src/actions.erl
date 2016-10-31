@@ -61,6 +61,17 @@ spawn_action( <<"augment">>,  Req, State ) ->
     %% tail end recurse
     action_valid(augment, Pid, ActionKeepAlive, Req, State);
 
+spawn_action( <<"contain">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_contain:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_contain:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(contain, Pid, ActionKeepAlive, Req, State);
+
 spawn_action( <<"deny">>,  Req, State ) ->
     %% start gen_server for that action
     Pid = act_deny:start(State),
