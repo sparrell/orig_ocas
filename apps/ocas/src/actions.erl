@@ -72,6 +72,39 @@ spawn_action( <<"contain">>,  Req, State ) ->
     %% tail end recurse
     action_valid(contain, Pid, ActionKeepAlive, Req, State);
 
+spawn_action( <<"copy">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_copy:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_copy:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(copy, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"delay">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_delay:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_delay:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(delay, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"delete">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_delete:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_delete:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(delete, Pid, ActionKeepAlive, Req, State);
+
 spawn_action( <<"deny">>,  Req, State ) ->
     %% start gen_server for that action
     Pid = act_deny:start(State),
@@ -82,6 +115,61 @@ spawn_action( <<"deny">>,  Req, State ) ->
 
     %% tail end recurse
     action_valid(deny, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"detonate">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_detonate:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_detonate:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(detonate, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"distill">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_distill:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_distill:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(distill, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"get">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_get:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_get:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(get, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"investigate">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_investigate:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_investigate:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(investigate, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"locate">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_locate:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_locate:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(locate, Pid, ActionKeepAlive, Req, State);
 
 spawn_action( <<"mitigate">>,  Req, State ) ->
     %% start gen_server for that action
