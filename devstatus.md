@@ -12,11 +12,11 @@ Status is:
 
 ## 1. Sanity
 
-- P - test get to /ok correctly processed
+- P - test GET to /ok correctly processed
    * status=200, body=ok
-- P - test get to /status simply processed 
+- P - test GET to /status simply processed 
    * status=200, body=meaningless for now until real status code added
-- P - test get to /openc2 correctly processed (rejected with 405 return)
+- P - test GET to /openc2 correctly processed (rejected with 405 return)
 - P - test no-http-body correctly processed (rejected with 400 return)
 - P - test media-type-not-json correctly processed (rejected with 415 return)
 - P - test bad json correctly processed (rejected with 400 return)
@@ -24,6 +24,8 @@ Status is:
 ## 2. Simple single command validator
 
 ### 2.1 Action Sanity
+- P - test action=nonsense correctly processed (rejected with 400 return)
+   * note this is not exhautive test of all invalid actions
 - ? - test all actions 'simply' processed
    * simply processed has two tests
       + valid action/target
@@ -32,11 +34,13 @@ Status is:
          - 200 return but has_target=false in reply
          - ie worked since semantic check not in yet
    * P - action =
+      + allow
+      + augment
       + deny
+      + mitigate
       + scan
-   * N - action= remaining 35 actions
-- P - test action=nonsense correctly processed (rejected with 400 return)
-   * note this is not exhautive test of all invalid actions
+   * N - action= remaining 33 actions
+- N - test Reply and Alert (not really actions like others)
 
 ### 2.2 Target Sanity
 - N - test target=network connection simply processed

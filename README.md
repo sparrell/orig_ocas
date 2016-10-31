@@ -196,21 +196,20 @@ and the context (messaging) of the network being simulated
 in addition to the modularizing the software that was mentioned earlier.
 
 ###5.4 Actions
-The Actions module contains get_valid_action/1 
+The module actions.erl contains spawn_action/3
 which both verifies the request’s json action is valid, 
 and it spawns the process for that action. The spawned process 
-runs the function for that action in the actions module 
-(eg deny in the json action field spawns the process running the deny_server/1 function. 
-As of this report, skeleton code exists for all 37 actions defined in the openC2 specification 
-to at least verify a valid action
-(but not target/actuator/modifiers that are semantically correct for that action). 
+runs the function for that action in the action_servers directory 
+(eg deny in the json action field spawns the process running the module act_deny.erl.
+As of this report, skeleton code exists for some, but not all of the 35 actions defined in the openC2 specification.
+It verifies a valid action,
+but not target/actuator/modifiers that are semantically correct for that action. 
 For each of the actions
 the processes are actually spun up (albeit they only do a simple keepalive).
 
 ###5.5 More on software design
 See README.md in apps/ocas/src for more on the software design
 including a sunny day walk thru the modules/functions.
-
 
 ##6. Development Status
 Development status will attempt to be explained using test status.

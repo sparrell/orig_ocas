@@ -36,95 +36,10 @@
 -author("Duncan Sparrell").
 -license("Apache 2.0").
 
--export([ is_valid_action/1
-        , spawn_action/3
-        , spinup/3
-        ]).
-
-is_valid_action(Action) ->
-    %% this routine verifies action is on list of valid actions
-    %% and returns atom which is routine to run.
-
-    %% note it uses a list instead of a simple binary_to_atom
-    %% this is intentional to prevent DoS attacks
-    %%   (which would use up atoms by sending many invalid actions)
-
-    ValidActions =
-        #{ <<"alert">>        => { act_alert, alert_server}
-         ,  <<"allow">>       => { act_allow, gen_server2 }
-         ,  <<"augment">>     => { act_augment, gen_server2 }
-         ,  <<"cancel">>      => { act_cancel, cancel_server }
-         ,  <<"contain">>     => { act_contain, contain_server }
-         ,  <<"copy">>        => { act_copy, copy_server }
-         ,  <<"delay">>       => { act_delay, delay_server }
-         ,  <<"delete">>      => { act_delete, delete_server }
-         ,  <<"deny">>        => { act_deny, deny_server }
-         ,  <<"detonate">>    => { act_detonate, detonate_server }
-         ,  <<"distill">>     => { act_distill, distill_server }
-         ,  <<"get">>         => { act_get, get_server }
-         ,  <<"investigate">> => { act_investigate, investigate_server }
-         ,  <<"locate">>      => { act_locate, locate_server }
-         ,  <<"mitigate">>    => { act_mitigate, mitigate_server }
-         ,  <<"modify">>      => { act_modify, modify_server }
-         ,  <<"move">>        => { act_move, move_server }
-         ,  <<"notify">>      => { act_notify, notify_server }
-         ,  <<"pause">>       => { act_pause, pause_server }
-         ,  <<"query">>       => { act_query, query_server }
-         ,  <<"redirect">>    => { act_redirect, redirect_server }
-         ,  <<"remediate">>   => { act_remediate, remediate_server }
-         ,  <<"report">>      => { act_report, report_server }
-         ,  <<"response">>    => { act_response, response_server }
-         ,  <<"restart">>     => { act_restart, restart_server }
-         ,  <<"restore">>     => { act_restore, restore_server }
-         ,  <<"resume">>      => { act_resume, resume_server }
-         ,  <<"save">>        => { act_save, save_server }
-         ,  <<"scan">>        => { act_scan, scan_server }
-         ,  <<"set">>         => { act_set, set_server }
-         ,  <<"snapshot">>    => { act_snapshot, snapshot_server }
-         ,  <<"start">>       => { act_start, start_server }
-         ,  <<"stop">>        => { act_stop, stop_server }
-         ,  <<"substitute">>  => { act_substitute, substitute_server }
-         ,  <<"sync">>        => { act_sync, sync_server }
-         ,  <<"throttle">>    => { act_throttle, throttle_server }
-         ,  <<"update">>      => { act_update, update_server }
-         },
-
-    %% return {true, module/function to run} if valid action,
-    %%      otherwise return {false, { undefined, undefined}
-    ActionValid = maps:is_key(Action, ValidActions),
-    DefaultAction = { undefined, undefined },
-    ActionValue = maps:get(Action, ValidActions, DefaultAction),
-    { ActionValid, ActionValue }.
-
-spawn_action( ActionModule, ActionServer, Json ) ->
-    lager:info( "Got to spawn_action for ~p:~p ", [ ActionModule
-                                                  , ActionServer
-                                                  ] ),
-
-    %% spin up a process for this command and have it orchestrate
-    ActionProcess = spawn(ActionModule, ActionServer, [Json]),
-
-    %% check works by sending keepalive and verifying response
-    ActionProcess!{self(), keepalive},
-    receive
-        %% get the keepalive
-        {keepalive_received, ActionServer} ->
-            lager:debug( "spawn_action(~p) keepalive from ~p", [ ActionServer
-                                                               , ActionProcess
-                                                               ] ),
-            KeepAliveWorked = true
-    after 500 ->   % timeout in 0.5 seconds
-        lager:debug( "spawn_action(~p) no keepalive from ~p", [ ActionServer
-                                                              , ActionProcess
-                                                               ] ),
-            KeepAliveWorked = false
-    end,
-
-    %% return whether keepalive worked, and spawned process id
-    { KeepAliveWorked, ActionProcess}.
+-export([ spawn_action/3 ]).
 
 %% spawn action servers
-spinup( act_allow,  Req, State ) ->
+spawn_action( <<"allow">>,  Req, State ) ->
     %% start gen_server for that action
     Pid = act_allow:start(State),
 
@@ -133,9 +48,9 @@ spinup( act_allow,  Req, State ) ->
     lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
 
     %% tail end recurse
-    send_response(Pid, Req, State);
+    action_valid(allow, Pid, ActionKeepAlive, Req, State);
 
-spinup( act_augment,  Req, State ) ->
+spawn_action( <<"augment">>,  Req, State ) ->
     %% start gen_server for that action
     Pid = act_augment:start(State),
 
@@ -144,15 +59,89 @@ spinup( act_augment,  Req, State ) ->
     lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
 
     %% tail end recurse
-    send_response(Pid, Req, State);
+    action_valid(augment, Pid, ActionKeepAlive, Req, State);
 
-spinup( _ActionSvr,  Req, State ) ->
+spawn_action( <<"deny">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_deny:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_deny:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(deny, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"mitigate">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_mitigate:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_mitigate:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(mitigate, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"scan">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_scan:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_scan:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(scan, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( _ActionSvr,  Req, State ) ->
     %% no function for this action so reply accordingly
-    {ok, Req2} = cowboy_req:reply(400, [], <<"Missing action function">>, Req),
+    {ok, Req2} = cowboy_req:reply( 400
+                                 , []
+                                 , <<"Missing action function">>
+                                 , Req
+                                 ),
     {ok, Req2, State}.
 
+action_valid(Action, Pid, ActionKeepAlive, Req, State) ->
+    %% action was valid so update State
+    State2 = maps:put(action_valid, true, State),
+    State3 = maps:put(action, Action, State2),
+
+    %% tail end recurse to verifying keepalive
+    verify_keepalive( ActionKeepAlive, Pid, Req, State3).
+
+verify_keepalive( {keepalive_received, Server}
+                , Pid
+                , Req
+                , State
+                ) ->
+    %% keepalive worked as expected
+    State2 = maps:put(action_keepalive, true, State),
+    State3 = maps:put(action_server, Server, State2),
+
+    %% tail recurse to sending response
+    send_response(Pid, Req, State3);
+
+verify_keepalive( UnexpectedKeepalive
+                , _Pid
+                , Req
+                , State
+                ) ->
+    %% didnot get expected keepalive response
+    State2 = maps:put(action_keepalive, false, State),
+    lager:info("~p UnexpectedKeepalive", [UnexpectedKeepalive]),
+    {ok, Req2} = cowboy_req:reply( 400
+                                 , []
+                                 , <<"keepalive failed">>
+                                 , Req
+                                 ),
+    %% don't continue on, return because of unexpected response
+    {ok, Req2, State2}.
+
 send_response(Pid, Req, State) ->
-    %% for now just reply with state as json
+
+    %% for now just reply with some of State as json
     ReplyBody = jsx:encode( State ),
 
     State2 = maps:put(pid, Pid, State),

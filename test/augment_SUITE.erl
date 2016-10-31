@@ -62,7 +62,8 @@ init_per_suite(Config) ->
 
 test_augment(_Config) ->
 
-    ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
+    ReqHeaders = [ {<<"content-type">>
+                 , <<"application/json">>}
                  ],
 
     Url = "/openc2",
@@ -84,12 +85,14 @@ test_augment(_Config) ->
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_augment">>}
-                        , {<<"action_function">>, <<"gen_server2">>}
+                        , {<<"has_action">>, true}
+                        , {<<"action">>, <<"augment">>}
+                        , {<<"action_server">>, <<"augment_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
                         , {<<"has_target">>, true}
+                        , {<<"action_keepalive">>, true}
                         ],
 
     %% send request, test response
@@ -113,7 +116,7 @@ test_bad_augment(_Config) ->
 
     Options = #{},
 
-    %% augment requires a target and a target
+    %% augment requires a target
     %%     leave off target and it should fail
     Json = ?AUGMENTWOTARGET,
 
@@ -130,12 +133,14 @@ test_bad_augment(_Config) ->
     %% but will get 'false' for has_target
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_augment">>}
-                        , {<<"action_function">>, <<"gen_server2">>}
+                        , {<<"has_action">>, true}
+                        , {<<"action">>, <<"augment">>}
+                        , {<<"action_server">>, <<"augment_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
                         , {<<"has_target">>, false}
+                        , {<<"action_keepalive">>, true}
                         ],
 
     %% send request, test response

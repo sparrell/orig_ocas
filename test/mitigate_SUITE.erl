@@ -48,10 +48,8 @@ suite() ->
 %% setup config parameters
 init_per_suite(Config) ->
     {ok, _AppList} = application:ensure_all_started(lager),
-    %%lager:info("AppList: ~p~n", [AppList]),
 
     {ok, _AppList2} = application:ensure_all_started(shotgun),
-    %%lager:info("AppList2: ~p~n", [AppList2]),
 
     %% since ct doesn't read sys.config, set configs here
     application:set_env(ocas, port, 8080),
@@ -59,13 +57,13 @@ init_per_suite(Config) ->
 
     %% start application
     {ok, _AppList3} = application:ensure_all_started(ocas),
-    %%lager:info("AppList3: ~p~n", [AppList3]),
 
     Config.
 
 test_mitigate(_Config) ->
 
-    ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
+    ReqHeaders = [ {<<"content-type">>
+                 , <<"application/json">>}
                  ],
 
     Url = "/openc2",
@@ -87,8 +85,9 @@ test_mitigate(_Config) ->
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_mitigate">>}
-                        , {<<"action_function">>, <<"mitigate_server">>}
+                        , {<<"has_action">>, true}
+                        , {<<"action">>, <<"mitigate">>}
+                        , {<<"action_server">>, <<"mitigate_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, false}
                         , {<<"has_modifiers">>, false}
@@ -117,8 +116,8 @@ test_bad_mitigate(_Config) ->
 
     Options = #{},
 
-    %% Mitigate requires a target and a target
-    %%      leave off target and it should fail
+    %% Mitigate requires a target
+    %%    leave off target and it should fail
     Json = ?MITIGATEWOTARGET,
 
     %% validate the json
@@ -134,8 +133,9 @@ test_bad_mitigate(_Config) ->
     %% but will get 'false' for has_actuator
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_mitigate">>}
-                        , {<<"action_function">>, <<"mitigate_server">>}
+                        , {<<"has_action">>, true}
+                        , {<<"action">>, <<"mitigate">>}
+                        , {<<"action_server">>, <<"mitigate_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, false}
                         , {<<"has_modifiers">>, false}
