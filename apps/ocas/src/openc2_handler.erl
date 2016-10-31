@@ -124,95 +124,20 @@ has_action(true, Req, State ) ->
     %% json has action so move on
     State2 = maps:put(has_action, true, State),
 
-    %% move on to next step - is it a valid action
-    JsonMap = maps:get(json_map, State2),
-    ActionBin = maps:get( <<"action">>, JsonMap ),
-    lager:info("action bintext: ~p", [ActionBin] ),
-    { ActionValid
-    , {ActionModule, ActionFunction}
-    } = actions:is_valid_action(ActionBin),
-    State3 = maps:put(action_valid, ActionValid, State2),
-    State4 = maps:put(action_module, ActionModule, State3),
-    State5 = maps:put(action_function, ActionFunction, State4),
-
-    %% check if action is valid
-    check_valid_action( ActionValid
-                      , ActionModule
-                      , ActionFunction
-                      , Req
-                      , State5
-                      ).
-
-%% check if action is in valid
-check_valid_action( false, _ActionModule, _ActionFunction, Req, State ) ->
-    %% illegal action so bad input
-    lager:info("check_valid_action: bad action" ),
-
-    {ok, Req2} = cowboy_req:reply(400, [], <<"bad action value">>, Req),
-    %% return - not tail recursive since request was bad)
-    %%   is this correct return tuple?
-    {ok, Req2, State};
-
-check_valid_action( true, ActionModule, gen_server2, Req, State ) ->
-    %% valid action, action server used gen_server behavior
-    %%   once all old actions cleaned up, then gen_server can be removed
-    %%   and this can be end of function head (ie beyond is the old stuff
-    lager:info("check_valid_action: good gen_svr2 action: ~p", [ActionModule] ),
-
     %%   check existence of target, actuator, modifiers
     %%           for now just add them to State
     %%           figure out how to deal with them later
-    %%   and then spin up action process
 
-    JsonMap = maps:get(json_map, State),
+    JsonMap = maps:get(json_map, State2),
     TargetKeyExists = maps:is_key( <<"target">>, JsonMap ),
-    State2 = maps:put(has_target, TargetKeyExists, State),
+    State3 = maps:put(has_target, TargetKeyExists, State2),
     ActuatorKeyExists = maps:is_key( <<"actuator">>, JsonMap ),
-    State3 = maps:put(has_actuator, ActuatorKeyExists, State2),
+    State4 = maps:put(has_actuator, ActuatorKeyExists, State3),
     ModifiersKeyExists = maps:is_key( <<"modifiers">>, JsonMap ),
-    State4 = maps:put(has_modifiers, ModifiersKeyExists, State3),
+    State5 = maps:put(has_modifiers, ModifiersKeyExists, State4),
 
-    %% spin up the process
-    actions:spinup(ActionModule, Req, State4);
-    %% eventually refactor this to just on bin and catch fail if no function
+    %% move on to next step - is it a valid action
+    ActionBin = maps:get( <<"action">>, JsonMap ),
+    lager:info("action bintext: ~p", [ActionBin] ),
 
-check_valid_action( true, ActionModule, ActionFunction, Req, State ) ->
-    %% valid action
-    %%   check existence of target, actuator, modifiers
-    %%   and then spin up action process
-    lager:info("check_valid_action: good action: ~p", [ActionFunction] ),
-
-    JsonMap = maps:get(json_map, State),
-    TargetKeyExists = maps:is_key( <<"target">>, JsonMap ),
-    State2 = maps:put(has_target, TargetKeyExists, State),
-    ActuatorKeyExists = maps:is_key( <<"actuator">>, JsonMap ),
-    State3 = maps:put(has_actuator, ActuatorKeyExists, State2),
-    ModifiersKeyExists = maps:is_key( <<"modifiers">>, JsonMap ),
-    State4 = maps:put(has_modifiers, ModifiersKeyExists, State3),
-
-    %% spin up the action process
-    { ActionKeepAliveWorked, ActionPid } = actions:spawn_action( ActionModule
-                                                               , ActionFunction
-                                                               , JsonMap ),
-    lager:info("~p=~p keepalive: ~p", [ ActionFunction
-                                      , ActionPid
-                                      , ActionKeepAliveWorked
-                                      ]),
-
-    %% save whether process startup worked for now and then reply
-    %% later fix so actually does stuff
-    State5 = maps:put(action_keepalive, ActionKeepAliveWorked, State4),
-
-    send_response(Req, State5).
-
-send_response(Req, State) ->
-    %% for now just reply with state as json
-    ReplyBody = jsx:encode( State ),
-
-    Headers = [ {<<"content-type">>, <<"application/json">>} ],
-    cowboy_req:reply(200, Headers, ReplyBody, Req).
-
-
-
-
-
+    actions:spawn_action(ActionBin, Req, State5).

@@ -4,6 +4,7 @@
 %%% @copyright (C) 2016, sFractal Consulting LLC
 %%%
 %%% All rights reserved.
+%%% Licensed under the Apache License, Version 2.0 (the "License");
 %%%
 %%% Redistribution and use in source and binary forms, with or without
 %%% modification, are permitted provided that the following conditions are
@@ -66,34 +67,34 @@ keepalive() ->
 
 %% initialize server with state
 init( [State] ) ->
-    lager:debug( "starting augment_server with ~p", [State] ),
+    lager:debug( "starting ~p with ~p", [?MODULE, State] ),
     { ok, State }.
 
 %% synchronous calls
 handle_call( keepalive, From, State ) ->
-    lager:debug( "augment_server got keepalive from ~p", [From] ),
+    lager:debug( "~p got keepalive from ~p", [?MODULE, From] ),
     %% reply to keepalive
     Response = {keepalive_received, augment_server},
     {reply, Response, State};
 
 %% handle unknown call messages
 handle_call(Message, From, State) ->
-    lager:info( "augment_server got unknown ~p from ~p", [Message, From] ),
+    lager:info( "~p got unknown ~p from ~p", [?MODULE, Message, From] ),
     {reply, error, State}.
 
 %% async calls
 handle_cast(shutdown, State) ->
-    lager:info( "augment_server got shutdown" ),
+    lager:info( "~p got shutdown", [?MODULE] ),
     {stop, normal, State};
 
 %% handle unknown cast messages
 handle_cast(Message, State) ->
-    lager:info( "augment_server got unknown ~p", [Message] ),
+    lager:info( "~p got unknown ~p", [?MODULE, Message] ),
     {noreply, State}.
 
 %% handle unknown info messages
 handle_info(Message, State) ->
-    lager:info( "augment_server got unknown ~p", [Message] ),
+    lager:info( "~p got unknown ~p", [?MODULE, Message] ),
     {noreply, State}.
 
 %% handle terminate

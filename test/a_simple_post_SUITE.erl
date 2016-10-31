@@ -189,7 +189,7 @@ test_post(_Config) ->
                                           , RespHeaders
                                           ),
     %%   note content length is likely to change
-    { <<"content-length">>, <<"506">>} =  lists:keyfind(<<"content-length">>
+    { <<"content-length">>, <<"493">>} =  lists:keyfind(<<"content-length">>
                                                                  , 1
                                                                  , RespHeaders
                                                                  ),
@@ -366,7 +366,7 @@ test_bad_json(_Config) ->
                                                   , RespHeaders
                                                   ),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-    %% note content length is for error mesg "Missing Body."
+    %% note content length is for error mesg "Bad JSON"
     { <<"content-length">>, <<"8">>} =  lists:keyfind( <<"content-length">>
                                                       , 1
                                                       , RespHeaders
@@ -420,8 +420,8 @@ test_bad_action(_Config) ->
                                                   , RespHeaders
                                                   ),
     { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
-    %% note content length is for error mesg "Missing Body."
-    { <<"content-length">>, <<"16">>} =  lists:keyfind( <<"content-length">>
+    %% note content length is for error mesg "Missing action function"
+    { <<"content-length">>, <<"23">>} =  lists:keyfind( <<"content-length">>
                                                       , 1
                                                       , RespHeaders
                                                       ),
@@ -432,7 +432,7 @@ test_bad_action(_Config) ->
                                                            ),
 
     %% test body is what was expected
-    RespBody = <<"bad action value">>,
+    RespBody = <<"Missing action function">>,
 
     ok.
 

@@ -48,10 +48,8 @@ suite() ->
 %% setup config parameters
 init_per_suite(Config) ->
     {ok, _AppList} = application:ensure_all_started(lager),
-    %%lager:info("AppList: ~p~n", [AppList]),
 
     {ok, _AppList2} = application:ensure_all_started(shotgun),
-    %%lager:info("AppList2: ~p~n", [AppList2]),
 
     %% since ct doesn't read sys.config, set configs here
     application:set_env(ocas, port, 8080),
@@ -59,13 +57,13 @@ init_per_suite(Config) ->
 
     %% start application
     {ok, _AppList3} = application:ensure_all_started(ocas),
-    %%lager:info("AppList3: ~p~n", [AppList3]),
 
     Config.
 
 test_deny(_Config) ->
 
-    ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
+    ReqHeaders = [ {<<"content-type">>
+                 , <<"application/json">>}
                  ],
 
     Url = "/openc2",
@@ -87,8 +85,9 @@ test_deny(_Config) ->
     %% decode the json and check for key/values of interest
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_deny">>}
-                        , {<<"action_function">>, <<"deny_server">>}
+                        , {<<"has_action">>, true}
+                        , {<<"action">>, <<"deny">>}
+                        , {<<"action_server">>, <<"deny_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
@@ -117,7 +116,8 @@ test_bad_deny(_Config) ->
 
     Options = #{},
 
-    %% Deny requires a target and a target - leave off target and it should fail
+    %% Deny requires a target
+    %%    leave off target and it should fail
     Json = ?DENYWOTARGET,
 
     %% validate the json
@@ -133,8 +133,9 @@ test_bad_deny(_Config) ->
     %% but will get 'false' for has_target
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
-                        , {<<"action_module">>, <<"act_deny">>}
-                        , {<<"action_function">>, <<"deny_server">>}
+                        , {<<"has_action">>, true}
+                        , {<<"action">>, <<"deny">>}
+                        , {<<"action_server">>, <<"deny_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
