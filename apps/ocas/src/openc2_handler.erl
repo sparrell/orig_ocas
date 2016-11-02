@@ -1,7 +1,10 @@
 -module(openc2_handler).
+-author("Duncan Sparrell").
+-license("Apache 2.0").
+
 %%%-------------------------------------------------------------------
 %%% @author Duncan Sparrell
-%%% @copyright (C) 2015, sFractal Consulting LLC
+%%% @copyright (C) 2016, sFractal Consulting LLC
 %%%
 %%% All rights reserved.
 %%%
@@ -32,9 +35,6 @@
 %%% (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 %%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %%%-------------------------------------------------------------------
-
--author("Duncan Sparrell").
--license("Apache 2.0").
 
 -export([init/3
         , rest_init/2

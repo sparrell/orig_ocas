@@ -1,7 +1,4 @@
--module(status_handler).
-
--author("Duncan Sparrell").
--license("Apache 2.0").
+-module(send_response).
 %%%-------------------------------------------------------------------
 %%% @author Duncan Sparrell
 %%% @copyright (C) 2016, sFractal Consulting LLC
@@ -29,28 +26,25 @@
 %%% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
 %%% OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 %%% SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-%%% LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-%%% DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+%%% LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES. LOSS OF USE,
+%%% DATA, OR PROFITS. OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 %%% THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 %%% (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 %%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %%%-------------------------------------------------------------------
 
--export([init/3, rest_init/2, to_html/2, allowed_methods/2]).
+-author("Duncan Sparrell").
+-license("Apache 2.0").
 
-init( {tcp, http}, _Req, _Opts) ->
-    {upgrade, protocol, cowboy_rest}.
+-export([ send_response/3 ]).
 
-rest_init(Req, _Opts) ->
-    {Method, Req1} = cowboy_req:method(Req),
-    {URL, Req2} = cowboy_req:url(Req1),
-    lager:info("~s ~s", [Method, URL]),
-    {ok, Req2, #{}}.
+send_response(Pid, Req, State) ->
 
-%% allow only GET
-allowed_methods(Req, State) ->
-    {[<<"GET">>], Req, State}.
+    %% for now just reply with some of State as json
+    ReplyBody = jsx:encode( State ),
 
-to_html(Req, State) ->
-    Body = <<"<html><body>Status Works - needs more later</body></html>">>,
-    {Body, Req, State}.
+    State2 = maps:put(pid, Pid, State),
+
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
+    {ok, Req2} = cowboy_req:reply(200, Headers, ReplyBody, Req),
+    {ok, Req2, State2}.

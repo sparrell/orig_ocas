@@ -4,12 +4,10 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%%  json for allow
--define(ALLOW01, <<"{
-\"action\": \"allow\",
+-define(QUERY02, <<"{
+\"action\": \"query\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"network-firewall\"
+    \"type\": \"openc2:command\",
     },
 \"actuator\": {
     \"type\": \"network-firewall\",
@@ -17,6 +15,5 @@
     },
 \"modifiers\": {
     \"response\": \"ack\",
-    \"where\": \"perimeter\"
     }
 }">>).

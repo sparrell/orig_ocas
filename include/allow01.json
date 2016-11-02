@@ -2,7 +2,7 @@
 "action": "allow",
 "target": { 
     "type": "cybox:Device",
-    "specifiers": "NetworkFirewall"
+    "specifiers": "network-firewall"
     },
 "actuator": {
     "type": "network-firewall",
