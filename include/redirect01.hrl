@@ -4,8 +4,8 @@
 %%% 
 %%%-------------------------------------------------------------------
 
--define(CONTAIN01, <<"{
-\"action\": \"contain\",
+-define(REDIRECT01, <<"{
+\"action\": \"redirect\",
 \"target\": { 
     \"type\": \"cybox:Device\",
     \"specifiers\": \"NetworkFirewall\"

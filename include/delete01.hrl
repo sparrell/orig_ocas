@@ -4,8 +4,8 @@
 %%% 
 %%%-------------------------------------------------------------------
 
--define(CONTAIN01, <<"{
-\"action\": \"contain\",
+-define(DELETE01, <<"{
+\"action\": \"delete\",
 \"target\": { 
     \"type\": \"cybox:Device\",
     \"specifiers\": \"NetworkFirewall\"

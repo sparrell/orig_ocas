@@ -4,8 +4,8 @@
 %%% 
 %%%-------------------------------------------------------------------
 
--define(CONTAIN01, <<"{
-\"action\": \"contain\",
+-define(XXX01, <<"{
+\"action\": \"xxx\",
 \"target\": { 
     \"type\": \"cybox:Device\",
     \"specifiers\": \"NetworkFirewall\"

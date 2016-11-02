@@ -4,12 +4,9 @@
 %%% 
 %%%-------------------------------------------------------------------
 
--define(CONTAIN01, <<"{
-\"action\": \"contain\",
-\"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkFirewall\"
-    },
+%%  json for contain
+-define(CANCELWOTARGET, <<"{
+\"action\": \"cancel\",
 \"actuator\": {
     \"type\": \"network-firewall\",
     \"specifiers\": \"fw01\"

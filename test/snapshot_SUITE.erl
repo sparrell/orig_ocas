@@ -16,11 +16,11 @@
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
-%% @doc test contain action
+%% @doc test snapshot action
 %% @end
 %%%-------------------------------------------------------------------
 
--module(contain_SUITE).
+-module(snapshot_SUITE).
 -author("Duncan Sparrell").
 -copyright("2016, sFractal Consulting, LLC").
 -license(apache2).
@@ -32,13 +32,13 @@
 -include_lib("common_test/include/ct.hrl").
 
 %% includes of common test json data
--include_lib("./include/contain01.hrl").
--include_lib("./include/contain_wo_target.hrl").
+-include_lib("./include/snapshot01.hrl").
+-include_lib("./include/snapshot_wo_target.hrl").
 
 %% tests to run
 all() ->
-    [ test_contain
-    , test_bad_contain
+    [ test_snapshot
+    , test_bad_snapshot
     ].
 
 %% timeout if no reply in a minute
@@ -60,7 +60,7 @@ init_per_suite(Config) ->
 
     Config.
 
-test_contain(_Config) ->
+test_snapshot(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>
                  , <<"application/json">>}
@@ -70,7 +70,7 @@ test_contain(_Config) ->
 
     Options = #{},
 
-    Json = ?CONTAIN01,
+    Json = ?SNAPSHOT01,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -86,8 +86,8 @@ test_contain(_Config) ->
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
                         , {<<"has_action">>, true}
-                        , {<<"action">>, <<"contain">>}
-                        , {<<"action_server">>, <<"contain_server">>}
+                        , {<<"action">>, <<"snapshot">>}
+                        , {<<"action_server">>, <<"snapshot_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}
@@ -107,7 +107,7 @@ test_contain(_Config) ->
     ok.
 
 
-test_bad_contain(_Config) ->
+test_bad_snapshot(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>
                  , <<"application/json">>}
@@ -119,7 +119,7 @@ test_bad_contain(_Config) ->
 
     %% requires a target
     %%     leave off target and it should fail
-    Json = ?CONTAINWOTARGET,
+    Json = ?SNAPSHOTWOTARGET,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -135,8 +135,8 @@ test_bad_contain(_Config) ->
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
                         , {<<"has_action">>, true}
-                        , {<<"action">>, <<"contain">>}
-                        , {<<"action_server">>, <<"contain_server">>}
+                        , {<<"action">>, <<"snapshot">>}
+                        , {<<"action_server">>, <<"snapshot_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}

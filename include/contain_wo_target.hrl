@@ -4,7 +4,6 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%%  json for contain
 -define(CONTAINWOTARGET, <<"{
 \"action\": \"contain\",
 \"actuator\": {

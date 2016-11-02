@@ -4,12 +4,8 @@
 %%% 
 %%%-------------------------------------------------------------------
 
--define(CONTAIN01, <<"{
-\"action\": \"contain\",
-\"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkFirewall\"
-    },
+-define(RESTARTWOTARGET, <<"{
+\"action\": \"restart\",
 \"actuator\": {
     \"type\": \"network-firewall\",
     \"specifiers\": \"fw01\"
