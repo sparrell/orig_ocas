@@ -61,6 +61,17 @@ spawn_action( <<"augment">>,  Req, State ) ->
     %% tail end recurse
     action_valid(augment, Pid, ActionKeepAlive, Req, State);
 
+spawn_action( <<"cancel">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_cancel:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_cancel:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(cancel, Pid, ActionKeepAlive, Req, State);
+
 spawn_action( <<"contain">>,  Req, State ) ->
     %% start gen_server for that action
     Pid = act_contain:start(State),
@@ -182,6 +193,138 @@ spawn_action( <<"mitigate">>,  Req, State ) ->
     %% tail end recurse
     action_valid(mitigate, Pid, ActionKeepAlive, Req, State);
 
+spawn_action( <<"modify">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_modify:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_modify:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(modify, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"move">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_move:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_move:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(move, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"notify">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_notify:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_notify:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(notify, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"pause">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_pause:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_pause:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(pause, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"query">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_query:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_query:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(query, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"redirect">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_redirect:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_redirect:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(redirect, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"remediate">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_remediate:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_remediate:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(remediate, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"report">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_report:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_report:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(report, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"restart">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_restart:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_restart:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(restart, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"restore">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_restore:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_restore:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(restore, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"resume">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_resume:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_resume:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(resume, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"save">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_save:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_save:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(save, Pid, ActionKeepAlive, Req, State);
+
 spawn_action( <<"scan">>,  Req, State ) ->
     %% start gen_server for that action
     Pid = act_scan:start(State),
@@ -192,6 +335,94 @@ spawn_action( <<"scan">>,  Req, State ) ->
 
     %% tail end recurse
     action_valid(scan, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"set">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_set:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_set:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(set, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"snapshot">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_snapshot:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_snapshot:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(snapshot, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"start">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_start:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_start:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(start, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"stop">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_stop:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_stop:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(stop, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"substitute">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_substitute:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_substitute:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(substitute, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"sync">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_sync:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_sync:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(sync, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"throttle">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_throttle:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_throttle:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(throttle, Pid, ActionKeepAlive, Req, State);
+
+spawn_action( <<"update">>,  Req, State ) ->
+    %% start gen_server for that action
+    Pid = act_update:start(State),
+
+    %% check with keep alive
+    ActionKeepAlive = act_update:keepalive(),
+    lager:debug("ActionKeepAlive: ~p ", [ActionKeepAlive]),
+
+    %% tail end recurse
+    action_valid(update, Pid, ActionKeepAlive, Req, State);
 
 spawn_action( _ActionSvr,  Req, State ) ->
     %% no function for this action so reply accordingly

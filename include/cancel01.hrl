@@ -4,8 +4,9 @@
 %%% 
 %%%-------------------------------------------------------------------
 
--define(CONTAIN01, <<"{
-\"action\": \"contain\",
+%%  json for contain
+-define(CANCEL01, <<"{
+\"action\": \"cancel\",
 \"target\": { 
     \"type\": \"cybox:Device\",
     \"specifiers\": \"NetworkFirewall\"
