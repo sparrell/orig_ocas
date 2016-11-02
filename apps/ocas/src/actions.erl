@@ -1,7 +1,7 @@
 -module(actions).
 %%%-------------------------------------------------------------------
 %%% @author Duncan Sparrell
-%%% @copyright (C) 2015, sFractal Consulting LLC
+%%% @copyright (C) 2016, sFractal Consulting LLC
 %%%
 %%% All rights reserved.
 %%%
@@ -451,7 +451,7 @@ verify_keepalive( {keepalive_received, Server}
     State3 = maps:put(action_server, Server, State2),
 
     %% tail recurse to sending response
-    send_response(Pid, Req, State3);
+    send_response:send_response(Pid, Req, State3);
 
 verify_keepalive( UnexpectedKeepalive
                 , _Pid
@@ -469,13 +469,13 @@ verify_keepalive( UnexpectedKeepalive
     %% don't continue on, return because of unexpected response
     {ok, Req2, State2}.
 
-send_response(Pid, Req, State) ->
-
-    %% for now just reply with some of State as json
-    ReplyBody = jsx:encode( State ),
-
-    State2 = maps:put(pid, Pid, State),
-
-    Headers = [ {<<"content-type">>, <<"application/json">>} ],
-    {ok, Req2} = cowboy_req:reply(200, Headers, ReplyBody, Req),
-    {ok, Req2, State2}.
+%send_response(Pid, Req, State) ->
+%
+%    %% for now just reply with some of State as json
+%    ReplyBody = jsx:encode( State ),
+%
+%    State2 = maps:put(pid, Pid, State),
+%
+%    Headers = [ {<<"content-type">>, <<"application/json">>} ],
+%    {ok, Req2} = cowboy_req:reply(200, Headers, ReplyBody, Req),
+%    {ok, Req2, State2}.
