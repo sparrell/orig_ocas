@@ -33,14 +33,8 @@ Status is:
       + valid action, no target
          - 200 return but has_target=false in reply
          - ie worked since semantic check not in yet
-   * P - action =
-      + allow
-      + augment
-      + deny
-      + mitigate
-      + scan
-   * N - action= remaining 33 actions
-- N - test Reply and Alert (not really actions like others)
+   * P - action for all 35 'true' actions (ie not Response and Alert)
+- N - test Response and Alert (not really actions like others)
 
 ### 2.2 Target Sanity
 - N - test target=network connection simply processed
