@@ -8,8 +8,11 @@
 -define(ALLOW01, <<"{
 \"action\": \"allow\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"network-firewall\"
+    \"type\": \"cybox:address\",
+    \"specifiers\": {
+        \"cybox:address_object_type\" : \"ipv4-addr\",
+        \"address-value\" : \"192.168.22.33\",
+        },
     },
 \"actuator\": {
     \"type\": \"network-firewall\",

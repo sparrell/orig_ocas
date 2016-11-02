@@ -469,13 +469,3 @@ verify_keepalive( UnexpectedKeepalive
     %% don't continue on, return because of unexpected response
     {ok, Req2, State2}.
 
-%send_response(Pid, Req, State) ->
-%
-%    %% for now just reply with some of State as json
-%    ReplyBody = jsx:encode( State ),
-%
-%    State2 = maps:put(pid, Pid, State),
-%
-%    Headers = [ {<<"content-type">>, <<"application/json">>} ],
-%    {ok, Req2} = cowboy_req:reply(200, Headers, ReplyBody, Req),
-%    {ok, Req2, State2}.
