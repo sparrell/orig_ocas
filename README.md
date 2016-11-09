@@ -64,8 +64,13 @@ and for now the style guide is the rules in [elvis.config](./elvis.config).
     $ rebar3 compile
 
 ###3.2 Build & Test
+To run complete set of test suites:
 
     $ rebar3 ct
+
+To run an individual test suite:
+
+    $ rebar3 ct --suite=test/query_SUITE
 
 ###3.3 Pull Requests
 As part of the quality checks on merging, github pull requests automagically run gadgetci which:
@@ -75,7 +80,12 @@ As part of the quality checks on merging, github pull requests automagically run
 - runs dialyzer
 
 ###3.4 Release
-not done yet
+not done yet.
+For now, you can 
+
+    $ rebar shell
+
+to build and run from command line
 
 ##4. Vision
 The vision is to have 
