@@ -266,8 +266,11 @@ verify_keepalive( {keepalive_received, Server}
     State2 = maps:put(target_keepalive, true, State),
     State3 = maps:put(target_server, Server, State2),
 
-    %% tail recurse to sending response
-    send_response:send_response(Req, State3);
+    %% determine whether has actuator and tail recurse
+    HasActuator = maps:get(has_actuator, State3),
+    lager:debug("HasActuator: ~p", [HasActuator]),
+    %% tail recurse to handling actuator
+    actuators:get_actuator(HasActuator, Req, State3);
 
 verify_keepalive( UnexpectedKeepalive
                 , Req
