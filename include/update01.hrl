@@ -7,8 +7,8 @@
 -define(UPDATE01, <<"{
 \"action\": \"update\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkFirewall\"
+    \"type\": \"cybox:device\",
+    \"specifiers\": \"network-firewall\"
     },
 \"actuator\": {
     \"type\": \"network-firewall\",

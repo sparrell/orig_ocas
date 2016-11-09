@@ -4,26 +4,22 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%%  json for deny
+%%  json for allow
 -define(DENY01, <<"{
 \"action\": \"deny\",
-\"target\": {
-    \"type\": \"cybox:Network_Connection\",
+\"target\": { 
+    \"type\": \"cybox:address\",
     \"specifiers\": {
-        \"Layer4Protocol\": \"UDP\",
-        \"DestinationSocketAddress\": {
-            \"IP_Address\": {\"Address_Value\": \"1.2.3.4\"},
-            \"Port\": {\"Port_Value\": 443}
-            }
-        }
+        \"cybox:address_object_type\" : \"ipv4-addr\",
+        \"address-value\" : \"192.168.22.33\",
+        },
     },
 \"actuator\": {
-    \"type\": \"network-router\",
-    \"specifiers\": {\"port\": \"2\"}
+    \"type\": \"network-firewall\",
+    \"specifiers\": \"fw01\"
     },
 \"modifiers\": {
     \"response\": \"ack\",
     \"where\": \"perimeter\"
     }
 }">>).
-

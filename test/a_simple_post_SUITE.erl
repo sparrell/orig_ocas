@@ -35,6 +35,7 @@
 -include_lib("./include/mitigate01.hrl").
 -include_lib("./include/nonsense_action.hrl").
 -include_lib("./include/bad_json.hrl").
+-include_lib("./include/mitigate_wo_target.hrl").
 
 %% tests to run
 all() ->
@@ -46,6 +47,7 @@ all() ->
     , test_unsupported_media_type
     , test_bad_json
     , test_bad_action
+    , test_missing_target
     ].
 
 %% timeout if no reply in a minute
@@ -107,7 +109,6 @@ test_get_ok(_Config) ->
 
 test_get_status(_Config) ->
     MyPort = application:get_env(ocas, port, 8080),
-    %%lager:info("test_post:port= ~p", [MyPort]),
     {ok, Conn} = shotgun:open("localhost", MyPort),
     %%lager:info("connection = ~p", [Conn]),
     Headers = [ {<<"content-type">>, <<"application/text">>} ],
@@ -167,17 +168,11 @@ test_post(_Config) ->
     Options = #{},
 
     %% send json command to openc2
-    %%lager:info("about to send json to openc2"),
     {ok, Response} = shotgun:post(Conn, "/openc2", Headers, Body, Options),
-    lager:info("sent json, got: ~p", [Response] ),
 
     %% verify got 200 for status code
     #{ status_code := 200 } = Response,
-    %%lager:info("status = ~p", [RespStatus]),
     #{ headers := RespHeaders} = Response,
-    %%lager:info("headers = ~p", [RespHeaders]),
-    #{ body := RespBody } = Response,
-    lager:info("body = ~p", [RespBody]),
 
     %% test header contents are correct
     { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
@@ -189,10 +184,10 @@ test_post(_Config) ->
                                           , RespHeaders
                                           ),
     %%   note content length is likely to change
-    { <<"content-length">>, <<"493">>} =  lists:keyfind(<<"content-length">>
-                                                                 , 1
-                                                                 , RespHeaders
-                                                                 ),
+%    { <<"content-length">>, <<"493">>} =  lists:keyfind(<<"content-length">>
+%                                                                 , 1
+%                                                                 , RespHeaders
+%                                                                 ),
     { <<"content-type">>
     , <<"application/json">>
     } = lists:keyfind( <<"content-type">>
@@ -433,6 +428,60 @@ test_bad_action(_Config) ->
 
     %% test body is what was expected
     RespBody = <<"Missing action function">>,
+
+    ok.
+
+test_missing_target(_Config) ->
+    %% test proper reponse to bad input (missing target)
+
+    MyPort = application:get_env(ocas, port, 8080),
+    %%lager:info("test_post:port= ~p", [MyPort]),
+    {ok, Conn} = shotgun:open("localhost", MyPort),
+    Headers = [ {<<"content-type">>, <<"application/json">>} ],
+
+    %% give an invalid action
+    SomeJson = ?MITIGATEWOTARGET,
+
+    %% validate Json
+    true = jsx:is_json(SomeJson),
+
+    Body = SomeJson,
+
+    Options = #{},
+
+    %% send json command to openc2
+    %%lager:info("about to send json to openc2"),
+    {ok, Response} = shotgun:post(Conn, "/openc2", Headers, Body, Options),
+    lager:info("sent json, got: ~p", [Response] ),
+
+    %% verify got 400 (bad request) for status code
+    #{ status_code := 400 } = Response,
+    %%lager:info("status = ~p", [RespStatus]),
+
+    #{ headers := RespHeaders} = Response,
+    %%lager:info("headers = ~p", [RespHeaders]),
+    #{ body := RespBody } = Response,
+    lager:info("body = ~p", [RespBody]),
+
+    %% test header contents are correct
+    { <<"server">>, <<"Cowboy">>} =  lists:keyfind( <<"server">>
+                                                  , 1
+                                                  , RespHeaders
+                                                  ),
+    { <<"date">>, _Date } =  lists:keyfind(<<"date">>, 1, RespHeaders),
+    %% note content length is for error mesg "Missing action function"
+    { <<"content-length">>, <<"19">>} =  lists:keyfind( <<"content-length">>
+                                                      , 1
+                                                      , RespHeaders
+                                                      ),
+    %% not sure why error response is in html?
+    { <<"content-type">>, <<"text/html">>} =  lists:keyfind( <<"content-type">>
+                                                           , 1
+                                                           , RespHeaders
+                                                           ),
+
+    %% test body is what was expected
+    RespBody = <<"No Target Specified">>,
 
     ok.
 

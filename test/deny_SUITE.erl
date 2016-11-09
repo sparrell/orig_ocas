@@ -33,12 +33,10 @@
 
 %% includes of common test json data
 -include_lib("./include/deny01.hrl").
--include_lib("./include/deny_wo_target.hrl").
 
 %% tests to run
 all() ->
     [ test_deny
-    , test_bad_deny
     ].
 
 %% timeout if no reply in a minute
@@ -103,54 +101,5 @@ test_deny(_Config) ->
                 , ExpectedStatus  % test get this received
                 , ExpectedJsonPairs
                 ),
-
-    ok.
-
-
-test_bad_deny(_Config) ->
-
-    ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
-                 ],
-
-    Url = "/openc2",
-
-    Options = #{},
-
-    %% Deny requires a target
-    %%    leave off target and it should fail
-    Json = ?DENYWOTARGET,
-
-    %% validate the json
-    true = jsx:is_json(Json),
-
-    %% send the json in the body of the request
-    ReqBody = Json,
-
-    %% expect to get 200 status code
-    %%    for now since not doing action specific semantic checks yet
-    ExpectedStatus = 200,
-
-    %% but will get 'false' for has_target
-    ExpectedJsonPairs = [ {<<"has_http_body">>, true}
-                        , {<<"good_json">>, true}
-                        , {<<"has_action">>, true}
-                        , {<<"action">>, <<"deny">>}
-                        , {<<"action_server">>, <<"deny_server">>}
-                        , {<<"action_valid">>, true}
-                        , {<<"has_actuator">>, true}
-                        , {<<"has_modifiers">>, true}
-                        , {<<"has_target">>, false}
-                        , {<<"action_keepalive">>, true}
-                        ],
-
-    %% send request, test response
-    helper:send_recieve( ReqHeaders       % to send
-                , Options          % to send
-                , ReqBody          % to send
-                , Url              % to send
-                , ExpectedStatus  % test get this received
-                , ExpectedJsonPairs
-                ),
-
 
     ok.
