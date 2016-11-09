@@ -49,7 +49,7 @@ C4 specifies a process for documenting
 and discussing issues including seeking consensus and clear descriptions, 
 use of "pull requests" and systematic reviews.
 
-This C4 was adopted from [https://rfc.zeromq.org/spec:42/C4/][https://rfc.zeromq.org/spec:42/C4/] under GNU GPLv3.
+This C4 was adopted from [https://rfc.zeromq.org/spec:42/C4/](https://rfc.zeromq.org/spec:42/C4/) under GNU GPLv3.
 
 
 ###2.4 Style Guide
