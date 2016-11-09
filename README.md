@@ -51,6 +51,7 @@ use of "pull requests" and systematic reviews.
 
 This C4 was adopted from [https://rfc.zeromq.org/spec:42/C4/](https://rfc.zeromq.org/spec:42/C4/) under GNU GPLv3.
 
+Need to actually add the c4 to the repo. Need to edit zeromq - apache lisence instead of GPL, any other?
 
 ###2.4 Style Guide
 A standalong style guide needs to be established. 
