@@ -94,20 +94,37 @@ with a protected interface,
 that could be used for interworking testing. 
 See TBD for the glue to do this.
 
-###4.1 Reference Implementation and Specification Validation
-A primary purpose (and first use) of the simulator is to uncover bugaboos in the openC2 specification. One such has already been uncovered (the mixed case issue mentioned earlier). The openC2 specification is an attempt to simplify and standardize the command and control of all aspects of security. Alternative implementations, particularly if they can interoperate, help uncover discrepancies and different interpretations allowing the spec to be improved. Having ocas and the python reference implementation interact will go a long way towards validating the openC2 specification.
+###4.1 Single-command Verification
+A primary purpose (and first use) of the simulator is to uncover bugaboos in the openC2 specification. 
+One such has already been uncovered (the mixed case issue). 
+The openC2 specification is an attempt to simplify and standardize the command and control of all aspects of security. 
+Alternative implementations, particularly if they can interoperate, help uncover discrepancies and different interpretations allowing the spec to be improved. 
+Having ocas and the python reference implementation interact will go a long way towards validating the openC2 specification.
 
-###4.2 One-time Single-command Simulator
-The first phase of software development will focus on getting the simulator up and running and accepting a single command. The software is being architected to both allow for easily scaling to a full network simulation and for using as the base for either an orchestrator or an actuator.
+The first phase of software development will focus on getting 
+an ocas generic consumer
+up and running and accepting a single command. 
+The software is being architected to both allow for easily scaling to a full network simulation and for using as the base for either an orchestrator or an actuator.
+But the generic consumer only accepts a single command (ie does not have state information about the system being simulated) 
+and only verifies the command is 'valid from a language viewpoint'.
+
+###4.2 Single-command Orchestrator/Actuator Consumer Simulator
+The next phase of development (still future at this writing) will include state information for 
+instantiating either an orchestrator-consumer (eg as seen from another orchestrator)
+or an actuator-consumer (eg as seen from an orchestor).
+The state information 'informs' the simulator as to the 'context' of the environment so it can respond appropriately. 
+One use of this is still for specification validation for error conditions such as requesting resources that are not present.
+
 
 ###4.3 Playbook Simulator
-Once the one-time single-command simulator is fully functional, it will be extended to multi-command to allow playbook simulation of a full network. This will involve retaining state information which will be then extended to allow multiple orchestrators and the study of race conditions and temporal vulnerabilities.
+Once the single-command simulator is fully functional, it will be extended to multi-command to allow playbook simulation of a full network. 
+This will involve retaining state information which will be then extended 
+to allow multiple orchestrators and the study of race conditions and temporal vulnerabilities.
 
 ###4.4 Implementation Template
 Another vision is for this code be forked and 'filled in' as actual working implementations.
 The software has been architected to serve as a base for production security software as either an orchestrator or an actuator.
 See TBD for one example.
-
 
 
 ##5. Organization of this software
@@ -147,7 +164,7 @@ At the current point this api takes no parameters
 and returns the html for “Status Works - needs more later”.
 
 ###5.2 status_ok_handler
-This api returns a simple “ok” in either text, html, or json. This is to serve as a keepalive is one is needed.
+This api returns a simple “ok” in either text, html, or json. This is to serve as a keepalive if one is needed.
 
 ###5.3 openc2_handler
 This module is the heart of the simulator. 
@@ -219,7 +236,7 @@ For each of the actions
 the processes are actually spun up (albeit they only do a simple keepalive).
 
 ###5.5 More on software design
-See README.md in apps/ocas/src for more on the software design
+See [README.md in apps/ocas/src](./apps/ocas/src/README.md) for more on the software design
 including a sunny day walk thru the modules/functions.
 
 ##6. Development Status
