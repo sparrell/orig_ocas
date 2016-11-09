@@ -26,26 +26,34 @@ Status is:
 ### 2.1 Action Sanity
 - P - test action=nonsense correctly processed (rejected with 400 return)
    * note this is not exhautive test of all invalid actions
-- ? - test all actions 'simply' processed
-   * simply processed has two tests
-      + valid action/target
-         - 200 return after validated action process spun up
-      + valid action, no target
-         - 200 return but has_target=false in reply
-         - ie worked since semantic check not in yet
-   * P - action for all 35 'true' actions (ie not Response and Alert)
+- P - test all 35 actions 'simply' processed (ie not Response and Alert)
 - N - test Response and Alert (not really actions like others)
 
 ### 2.2 Target Sanity
-- N - test target=network connection simply processed
-- N - test (first few) targets simply processed
+- P - test target=hostname simply processed
+- P - test target=ipv4 simply processed
+- P - test target=network connection simply processed
+- P - test target=network firewall simply processed
+- N - test rest of targets simply processed
+
+This is TBD% coverage of this aspect.
 
 ### 2.3 Actuator Sanity
-- N - test actuator=network-firewall simply processed
-- N - test (first few) actuators simply processed
-- N - test (first one, few) modifiers simply processed
+- P - test actuator=network-firewall simply processed
+- P - test actuator=network-router simply processed
+- P - test actuator=network-scanner simply processed
+- P - test works correctly when no actuator (ie demense simply processed)
+- N - test rest of actuators simply processed
 
-### 2.4 Command Specifics
+### 2.4 Modifier Sanity
+- N - test modifier = ? simply processed
+- N - test rest of modifiers simply processed
+
+### 2.6 Response & Alert Sanity
+- N - test response sanity
+- N - test alert sanity
+
+### 2.7 Command Specifics
 - N - test following command and response
    * action =  deny
    * target = network connection
