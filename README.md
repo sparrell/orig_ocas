@@ -39,7 +39,7 @@ This Code of Conduct is adapted from the Contributor Covenant,
 version 1.4.0, available at 
 [http://contributor-covenant.org/][http://contributor-covenant.org/].
 
-##2.3 Collective Code Construction Contract (C4)
+###2.3 Collective Code Construction Contract (C4)
 C4 provides a standard process for contributing, evaluating and discussing improvements on software projects. 
 It defines specific technical requirements for projects 
 like a style guide, unit tests, git and similar platforms. 
