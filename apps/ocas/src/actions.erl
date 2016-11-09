@@ -450,9 +450,6 @@ verify_keepalive( {keepalive_received, Server}
     State2 = maps:put(action_keepalive, true, State),
     State3 = maps:put(action_server, Server, State2),
 
-%    %% tail recurse to sending response
-%    send_response:send_response(Req, State3);
-
     %% recall whether has target and tail recurse
     HasTarget = maps:get(has_target, State3),
     lager:debug("HasTarget: ~p", [HasTarget]),
