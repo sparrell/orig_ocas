@@ -7,8 +7,8 @@
 -define(CONTAIN01, <<"{
 \"action\": \"contain\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkFirewall\"
+    \"type\": \"cybox:device\",
+    \"specifiers\": \"network-firewall\"
     },
 \"actuator\": {
     \"type\": \"network-firewall\",

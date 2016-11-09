@@ -1,6 +1,6 @@
 {"action": “query",
  "target": {
-    "type": “openc2:command"
+    "type": “command"
                 },
  "actuator": {
     "type": “network-firewall",

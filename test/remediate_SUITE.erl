@@ -16,11 +16,11 @@
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
-%% @doc test copy action
+%% @doc test remediate action
 %% @end
 %%%-------------------------------------------------------------------
 
--module(copy_SUITE).
+-module(remediate_SUITE).
 -author("Duncan Sparrell").
 -copyright("2016, sFractal Consulting, LLC").
 -license(apache2).
@@ -32,11 +32,11 @@
 -include_lib("common_test/include/ct.hrl").
 
 %% includes of common test json data
--include_lib("./include/copy01.hrl").
+-include_lib("./include/remediate01.hrl").
 
 %% tests to run
 all() ->
-    [ test_copy
+    [ test_remediate
     ].
 
 %% timeout if no reply in a minute
@@ -58,7 +58,7 @@ init_per_suite(Config) ->
 
     Config.
 
-test_copy(_Config) ->
+test_remediate(_Config) ->
 
     ReqHeaders = [ {<<"content-type">>
                  , <<"application/json">>}
@@ -68,7 +68,7 @@ test_copy(_Config) ->
 
     Options = #{},
 
-    Json = ?COPY01,
+    Json = ?REMEDIATE01,
 
     %% validate the json
     true = jsx:is_json(Json),
@@ -84,8 +84,8 @@ test_copy(_Config) ->
     ExpectedJsonPairs = [ {<<"has_http_body">>, true}
                         , {<<"good_json">>, true}
                         , {<<"has_action">>, true}
-                        , {<<"action">>, <<"copy">>}
-                        , {<<"action_server">>, <<"copy_server">>}
+                        , {<<"action">>, <<"remediate">>}
+                        , {<<"action_server">>, <<"remediate_server">>}
                         , {<<"action_valid">>, true}
                         , {<<"has_actuator">>, true}
                         , {<<"has_modifiers">>, true}

@@ -7,8 +7,8 @@
 -define(SNAPSHOT01, <<"{
 \"action\": \"snapshot\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkFirewall\"
+    \"type\": \"cybox:device\",
+    \"specifiers\": \"network-firewall\"
     },
 \"actuator\": {
     \"type\": \"network-firewall\",

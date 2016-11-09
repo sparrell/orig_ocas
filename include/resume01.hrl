@@ -7,8 +7,8 @@
 -define(RESUME01, <<"{
 \"action\": \"resume\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkFirewall\"
+    \"type\": \"cybox:device\",
+    \"specifiers\": \"network-firewall\"
     },
 \"actuator\": {
     \"type\": \"network-firewall\",

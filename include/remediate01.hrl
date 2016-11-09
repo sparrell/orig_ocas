@@ -4,8 +4,12 @@
 %%% 
 %%%-------------------------------------------------------------------
 
--define(COPYWOTARGET, <<"{
-\"action\": \"copy\",
+-define(REMEDIATE01, <<"{
+\"action\": \"remediate\",
+\"target\": { 
+    \"type\": \"cybox:device\",
+    \"specifiers\": \"network-firewall\"
+    },
 \"actuator\": {
     \"type\": \"network-firewall\",
     \"specifiers\": \"fw01\"

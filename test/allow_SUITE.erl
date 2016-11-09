@@ -33,12 +33,10 @@
 
 %% includes of common test json data
 -include_lib("./include/allow01.hrl").
--include_lib("./include/allow_wo_target.hrl").
 
 %% tests to run
 all() ->
     [ test_allow
-    , test_bad_allow
     ].
 
 %% timeout if no reply in a minute
@@ -106,51 +104,3 @@ test_allow(_Config) ->
 
     ok.
 
-
-test_bad_allow(_Config) ->
-
-    ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
-                 ],
-
-    Url = "/openc2",
-
-    Options = #{},
-
-    %% Allow requires a target
-    %%     leave off target and it should fail
-    Json = ?ALLOWWOTARGET,
-
-    %% validate the json
-    true = jsx:is_json(Json),
-
-    %% send the json in the body of the request
-    ReqBody = Json,
-
-    %% expect to get 200 status code
-    %%    for now since not doing action specific semantic checks yet
-    ExpectedStatus = 200,
-
-    %% but will get 'false' for has_target
-    ExpectedJsonPairs = [ {<<"has_http_body">>, true}
-                        , {<<"good_json">>, true}
-                        , {<<"has_action">>, true}
-                        , {<<"action">>, <<"allow">>}
-                        , {<<"action_server">>, <<"allow_server">>}
-                        , {<<"action_valid">>, true}
-                        , {<<"has_actuator">>, true}
-                        , {<<"has_modifiers">>, true}
-                        , {<<"has_target">>, false}
-                        , {<<"action_keepalive">>, true}
-                        ],
-
-    %% send request, test response
-    helper:send_recieve( ReqHeaders       % to send
-                , Options          % to send
-                , ReqBody          % to send
-                , Url              % to send
-                , ExpectedStatus  % test get this received
-                , ExpectedJsonPairs
-                ),
-
-
-    ok.

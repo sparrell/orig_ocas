@@ -7,8 +7,8 @@
 -define(RESTORE01, <<"{
 \"action\": \"restore\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkFirewall\"
+    \"type\": \"cybox:device\",
+    \"specifiers\": \"network-firewall\"
     },
 \"actuator\": {
     \"type\": \"network-firewall\",

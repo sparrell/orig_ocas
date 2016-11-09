@@ -1,4 +1,7 @@
 -module(actions).
+-author("Duncan Sparrell").
+-license("Apache 2.0").
+
 %%%-------------------------------------------------------------------
 %%% @author Duncan Sparrell
 %%% @copyright (C) 2016, sFractal Consulting LLC
@@ -33,15 +36,12 @@
 %%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %%%-------------------------------------------------------------------
 
--author("Duncan Sparrell").
--license("Apache 2.0").
-
 -export([ spawn_action/3 ]).
 
 %% spawn action servers
 spawn_action( <<"allow">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_allow:start(State),
+    {ok, Pid} = act_allow:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_allow:keepalive(),
@@ -52,7 +52,7 @@ spawn_action( <<"allow">>,  Req, State ) ->
 
 spawn_action( <<"augment">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_augment:start(State),
+    {ok, Pid} = act_augment:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_augment:keepalive(),
@@ -63,7 +63,7 @@ spawn_action( <<"augment">>,  Req, State ) ->
 
 spawn_action( <<"cancel">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_cancel:start(State),
+    {ok, Pid} = act_cancel:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_cancel:keepalive(),
@@ -74,7 +74,7 @@ spawn_action( <<"cancel">>,  Req, State ) ->
 
 spawn_action( <<"contain">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_contain:start(State),
+    {ok, Pid} = act_contain:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_contain:keepalive(),
@@ -85,7 +85,7 @@ spawn_action( <<"contain">>,  Req, State ) ->
 
 spawn_action( <<"copy">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_copy:start(State),
+    {ok, Pid} = act_copy:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_copy:keepalive(),
@@ -96,7 +96,7 @@ spawn_action( <<"copy">>,  Req, State ) ->
 
 spawn_action( <<"delay">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_delay:start(State),
+    {ok, Pid} = act_delay:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_delay:keepalive(),
@@ -107,7 +107,7 @@ spawn_action( <<"delay">>,  Req, State ) ->
 
 spawn_action( <<"delete">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_delete:start(State),
+    {ok, Pid} = act_delete:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_delete:keepalive(),
@@ -118,7 +118,7 @@ spawn_action( <<"delete">>,  Req, State ) ->
 
 spawn_action( <<"deny">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_deny:start(State),
+    {ok, Pid} = act_deny:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_deny:keepalive(),
@@ -129,7 +129,7 @@ spawn_action( <<"deny">>,  Req, State ) ->
 
 spawn_action( <<"detonate">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_detonate:start(State),
+    {ok, Pid} = act_detonate:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_detonate:keepalive(),
@@ -140,7 +140,7 @@ spawn_action( <<"detonate">>,  Req, State ) ->
 
 spawn_action( <<"distill">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_distill:start(State),
+    {ok, Pid} = act_distill:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_distill:keepalive(),
@@ -151,7 +151,7 @@ spawn_action( <<"distill">>,  Req, State ) ->
 
 spawn_action( <<"get">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_get:start(State),
+    {ok, Pid} = act_get:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_get:keepalive(),
@@ -162,7 +162,7 @@ spawn_action( <<"get">>,  Req, State ) ->
 
 spawn_action( <<"investigate">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_investigate:start(State),
+    {ok, Pid} = act_investigate:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_investigate:keepalive(),
@@ -173,7 +173,7 @@ spawn_action( <<"investigate">>,  Req, State ) ->
 
 spawn_action( <<"locate">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_locate:start(State),
+    {ok, Pid} = act_locate:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_locate:keepalive(),
@@ -184,7 +184,7 @@ spawn_action( <<"locate">>,  Req, State ) ->
 
 spawn_action( <<"mitigate">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_mitigate:start(State),
+    {ok, Pid} = act_mitigate:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_mitigate:keepalive(),
@@ -195,7 +195,7 @@ spawn_action( <<"mitigate">>,  Req, State ) ->
 
 spawn_action( <<"modify">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_modify:start(State),
+    {ok, Pid} = act_modify:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_modify:keepalive(),
@@ -206,7 +206,7 @@ spawn_action( <<"modify">>,  Req, State ) ->
 
 spawn_action( <<"move">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_move:start(State),
+    {ok, Pid} = act_move:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_move:keepalive(),
@@ -217,7 +217,7 @@ spawn_action( <<"move">>,  Req, State ) ->
 
 spawn_action( <<"notify">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_notify:start(State),
+    {ok, Pid} = act_notify:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_notify:keepalive(),
@@ -228,7 +228,7 @@ spawn_action( <<"notify">>,  Req, State ) ->
 
 spawn_action( <<"pause">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_pause:start(State),
+    {ok, Pid} = act_pause:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_pause:keepalive(),
@@ -239,7 +239,7 @@ spawn_action( <<"pause">>,  Req, State ) ->
 
 spawn_action( <<"query">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_query:start(State),
+    {ok, Pid} = act_query:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_query:keepalive(),
@@ -250,7 +250,7 @@ spawn_action( <<"query">>,  Req, State ) ->
 
 spawn_action( <<"redirect">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_redirect:start(State),
+    {ok, Pid} = act_redirect:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_redirect:keepalive(),
@@ -261,7 +261,7 @@ spawn_action( <<"redirect">>,  Req, State ) ->
 
 spawn_action( <<"remediate">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_remediate:start(State),
+    {ok, Pid} = act_remediate:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_remediate:keepalive(),
@@ -272,7 +272,7 @@ spawn_action( <<"remediate">>,  Req, State ) ->
 
 spawn_action( <<"report">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_report:start(State),
+    {ok, Pid} = act_report:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_report:keepalive(),
@@ -283,7 +283,7 @@ spawn_action( <<"report">>,  Req, State ) ->
 
 spawn_action( <<"restart">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_restart:start(State),
+    {ok, Pid} = act_restart:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_restart:keepalive(),
@@ -294,7 +294,7 @@ spawn_action( <<"restart">>,  Req, State ) ->
 
 spawn_action( <<"restore">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_restore:start(State),
+    {ok, Pid} = act_restore:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_restore:keepalive(),
@@ -305,7 +305,7 @@ spawn_action( <<"restore">>,  Req, State ) ->
 
 spawn_action( <<"resume">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_resume:start(State),
+    {ok, Pid} = act_resume:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_resume:keepalive(),
@@ -316,7 +316,7 @@ spawn_action( <<"resume">>,  Req, State ) ->
 
 spawn_action( <<"save">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_save:start(State),
+    {ok, Pid} = act_save:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_save:keepalive(),
@@ -327,7 +327,7 @@ spawn_action( <<"save">>,  Req, State ) ->
 
 spawn_action( <<"scan">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_scan:start(State),
+    {ok, Pid} = act_scan:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_scan:keepalive(),
@@ -338,7 +338,7 @@ spawn_action( <<"scan">>,  Req, State ) ->
 
 spawn_action( <<"set">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_set:start(State),
+    {ok, Pid} = act_set:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_set:keepalive(),
@@ -349,7 +349,7 @@ spawn_action( <<"set">>,  Req, State ) ->
 
 spawn_action( <<"snapshot">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_snapshot:start(State),
+    {ok, Pid} = act_snapshot:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_snapshot:keepalive(),
@@ -360,7 +360,7 @@ spawn_action( <<"snapshot">>,  Req, State ) ->
 
 spawn_action( <<"start">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_start:start(State),
+    {ok, Pid} = act_start:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_start:keepalive(),
@@ -371,7 +371,7 @@ spawn_action( <<"start">>,  Req, State ) ->
 
 spawn_action( <<"stop">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_stop:start(State),
+    {ok, Pid} = act_stop:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_stop:keepalive(),
@@ -382,7 +382,7 @@ spawn_action( <<"stop">>,  Req, State ) ->
 
 spawn_action( <<"substitute">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_substitute:start(State),
+    {ok, Pid} = act_substitute:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_substitute:keepalive(),
@@ -393,7 +393,7 @@ spawn_action( <<"substitute">>,  Req, State ) ->
 
 spawn_action( <<"sync">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_sync:start(State),
+    {ok, Pid} = act_sync:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_sync:keepalive(),
@@ -404,7 +404,7 @@ spawn_action( <<"sync">>,  Req, State ) ->
 
 spawn_action( <<"throttle">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_throttle:start(State),
+    {ok, Pid} = act_throttle:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_throttle:keepalive(),
@@ -415,7 +415,7 @@ spawn_action( <<"throttle">>,  Req, State ) ->
 
 spawn_action( <<"update">>,  Req, State ) ->
     %% start gen_server for that action
-    Pid = act_update:start(State),
+    {ok, Pid} = act_update:start(State),
 
     %% check with keep alive
     ActionKeepAlive = act_update:keepalive(),
@@ -437,12 +437,12 @@ action_valid(Action, Pid, ActionKeepAlive, Req, State) ->
     %% action was valid so update State
     State2 = maps:put(action_valid, true, State),
     State3 = maps:put(action, Action, State2),
+    State4 = maps:put(action_pid, Pid, State3),
 
     %% tail end recurse to verifying keepalive
-    verify_keepalive( ActionKeepAlive, Pid, Req, State3).
+    verify_keepalive( ActionKeepAlive, Req, State4).
 
 verify_keepalive( {keepalive_received, Server}
-                , Pid
                 , Req
                 , State
                 ) ->
@@ -450,11 +450,16 @@ verify_keepalive( {keepalive_received, Server}
     State2 = maps:put(action_keepalive, true, State),
     State3 = maps:put(action_server, Server, State2),
 
-    %% tail recurse to sending response
-    send_response:send_response(Pid, Req, State3);
+%    %% tail recurse to sending response
+%    send_response:send_response(Req, State3);
+
+    %% recall whether has target and tail recurse
+    HasTarget = maps:get(has_target, State3),
+    lager:debug("HasTarget: ~p", [HasTarget]),
+    %% tail recurse to handling target
+    targets:get_target(HasTarget, Req, State3 );
 
 verify_keepalive( UnexpectedKeepalive
-                , _Pid
                 , Req
                 , State
                 ) ->

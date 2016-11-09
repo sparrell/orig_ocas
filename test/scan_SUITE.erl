@@ -31,14 +31,12 @@
 %% required for common_test to work
 -include_lib("common_test/include/ct.hrl").
 
-%% test data
+%% includes of common test json data
 -include_lib("./include/scan01.hrl").
--include_lib("./include/scan_wo_target.hrl").
 
 %% tests to run
 all() ->
     [ test_scan
-    , test_bad_scan
     ].
 
 %% timeout if no reply in a minute
@@ -103,54 +101,5 @@ test_scan(_Config) ->
                 , ExpectedStatus  % test get this received
                 , ExpectedJsonPairs
                 ),
-
-    ok.
-
-
-test_bad_scan(_Config) ->
-
-    ReqHeaders = [ {<<"content-type">>, <<"application/json">>}
-                 ],
-
-    Url = "/openc2",
-
-    Options = #{},
-
-    %% Scan requires a target
-    %%    leave off target and it should fail
-    Json = ?SCANWOTARGET,
-
-    %% validate the json
-    true = jsx:is_json(Json),
-
-    %% send the json in the body of the request
-    ReqBody = Json,
-
-    %% expect to get 200 status code
-    %%    for now since not doing action specific semantic checks yet
-    ExpectedStatus = 200,
-
-    %% but will get 'false' for has_actuator
-    ExpectedJsonPairs = [ {<<"has_http_body">>, true}
-                        , {<<"good_json">>, true}
-                        , {<<"has_action">>, true}
-                        , {<<"action">>, <<"scan">>}
-                        , {<<"action_server">>, <<"scan_server">>}
-                        , {<<"action_valid">>, true}
-                        , {<<"has_actuator">>, true}
-                        , {<<"has_modifiers">>, true}
-                        , {<<"has_target">>, false}
-                        , {<<"action_keepalive">>, true}
-                        ],
-
-    %% send request, test response
-    helper:send_recieve( ReqHeaders       % to send
-                , Options          % to send
-                , ReqBody          % to send
-                , Url              % to send
-                , ExpectedStatus  % test get this received
-                , ExpectedJsonPairs
-                ),
-
 
     ok.

@@ -4,16 +4,15 @@
 %%% 
 %%%-------------------------------------------------------------------
 
-%%  json for scan
 -define(SCAN01, <<"{
 \"action\": \"scan\",
 \"target\": { 
-    \"type\": \"cybox:Device\",
-    \"specifiers\": \"NetworkScanner\"
+    \"type\": \"cybox:device\",
+    \"specifiers\": \"network-firewall\"
     },
 \"actuator\": {
-    \"type\": \"network-scanner\",
-    \"specifiers\": \"scanner01\"
+    \"type\": \"network-firewall\",
+    \"specifiers\": \"fw01\"
     },
 \"modifiers\": {
     \"response\": \"ack\",
