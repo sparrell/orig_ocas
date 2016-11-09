@@ -67,7 +67,7 @@ unpid( [ Key | RestOfKeys ], OldMap, NewMap ) ->
     unpid( RestOfKeys, OldMap, UpdatedMap ).
 
 transform_value(Value) ->
-    %% return transformed value if value is a pid, 
+    %% return transformed value if value is a pid,
     %%        otherwise leave alone
     case is_pid(Value) of
         true ->

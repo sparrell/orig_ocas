@@ -40,7 +40,7 @@
 get_target(false, Req, State ) ->
     %% HasTarget=false so move on
     %% reached here because no target info
-    %%    this is an error 
+    %%    this is an error
     lager:info("No Target"),
     {ok, Req2} = cowboy_req:reply( 400
                                  , []
@@ -91,7 +91,7 @@ handle_target_type(<<"cybox:hostname">>, TargetJson, Req, State ) ->
     %% hostname type should have specifier of hostname_value
     HostName = maps:get(<<"hostname_value">>, Specifiers, hostname_undefined),
     lager:info("hostname: ~p", [HostName] ),
-    
+
     %% spinup a server for this hostname
     %%   when get beyond one command, need to check first if already exists
     spawn_target( {hostname, HostName}, Req, State2 );
@@ -106,7 +106,10 @@ handle_target_type(<<"cybox:address">>, TargetJson, Req, State ) ->
     Specifiers = maps:get(<<"specifiers">>, TargetJson),
     lager:info("target specifiers: ~p", [Specifiers] ),
 
-    AddressType = maps:get(<<"cybox:address_object_type">>, Specifiers, address_type_undefined),
+    AddressType = maps:get( <<"cybox:address_object_type">>
+                          , Specifiers
+                          , address_type_undefined
+                          ),
 
     %% tail recurse on based on address type
     handle_address(AddressType, Specifiers, Req, State2 );
@@ -131,7 +134,7 @@ handle_target_type(<<"cybox:device">>, TargetJson, Req, State ) ->
 handle_target_type(<<"command">>, TargetJson, Req, State ) ->
     lager:debug("need to put stuff here"),
     lager:debug("handle_target_type:command ~p", [TargetJson] ),
-    {ok,Req, State};  % replace this
+    {ok, Req, State};  % replace this
 
 handle_target_type(TargetType, _TargetJson, Req, State ) ->
     %% ? dont know that TargetType
@@ -231,10 +234,15 @@ spawn_target( {network_firewall, NetworkFirewall}, Req, State ) ->
     lager:debug("TargetKeepAlive: ~p ", [TargetKeepAlive]),
 
     %% tail end recurse
-    target_valid({network_firewall, NetworkFirewall}, TargetKeepAlive, Req, State4);
+    target_valid( {network_firewall, NetworkFirewall}
+                , TargetKeepAlive
+                , Req
+                , State4
+                );
 
 spawn_target( {TargetType, Value},  Req, State ) ->
-    lager:info("spawn_target - no function head for ~p; Value=~p", [TargetType, Value]),
+    lager:info("spawn_target - no function head for ~p; Value=~p",
+               [TargetType, Value]),
     %% no function for this target so reply accordingly
     {ok, Req2} = cowboy_req:reply( 400
                                  , []
