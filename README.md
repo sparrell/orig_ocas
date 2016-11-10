@@ -4,6 +4,31 @@ ocas
 ## Table of Contents
    * [1. Intro](#intro)
    * [2. Ground Rules](#ground)
+      + [2.1 License](#2.1)
+      + [2.2 Code of Conduct](#)
+      + [2.3 Collective Code Construction Contract (C4)](#)
+      + [2.4 Style Guide](#)
+   * [2. Getting it running](#)
+      + [3.1 Build](#)
+      + [3.2 Build & Test](#)
+      + [3.3 Pull Requests](#)
+      + [3.4 Release](#)
+   * [4. Vision](#)
+      + [4.1 Single-command Verification](#)
+      + [4.2 Single-command Orchestrator/Actuator Consumer Simulator](#)
+      + [4.3 Playbook Simulator](#)
+      + [4.4 Implementation Template](#)
+   * [5. Organization of this software](#)
+      + [5.1 status_handler](#)
+      + [5.2 status_ok_handler](#)
+      + [5.3 openc2_handler](#)
+      + [5.4 Actions](#)
+      + [5.5 More on software design](#)
+   * [6. Development Status](#)
+   * [7. Specification Coverage](#)
+   * [8. Examples](#)
+   * [9. Want to help?](#)
+
 
 ##1. Intro <a id="intro"></a>
 
@@ -16,7 +41,7 @@ Ocas is an OTP application written in erlang to:
 - be a template for developing actual openc2 applications (ie replace the simulator code with code to actually perform the real function)
 
 ##2. Ground Rules <a id="ground"></a>
-###2.1 License
+###2.1 License <a id="2.1"></a>
 Copyright 2016 sFractal Consulting
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +56,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-###2.2 Code of Conduct
+###2.2 Code of Conduct <a id="2.2"></a>
 TL;DR - Don't be a jerk!
 
 To make sure there are no barriers to ocas development 
@@ -43,7 +68,7 @@ This Code of Conduct is adapted from the Contributor Covenant,
 version 1.4.0, available at 
 [http://contributor-covenant.org/](http://contributor-covenant.org/).
 
-###2.3 Collective Code Construction Contract (C4)
+###2.3 Collective Code Construction Contract (C4) <a id="2.3"></a>
 C4 provides a standard process for contributing, evaluating and discussing improvements on software projects. 
 It defines specific technical requirements for projects 
 like a style guide, unit tests, git and similar platforms. 
@@ -57,7 +82,7 @@ This C4 was adopted from [https://rfc.zeromq.org/spec:42/C4/](https://rfc.zeromq
 
 Need to actually add the c4 to the repo. Need to edit zeromq - apache lisence instead of GPL, any other?
 
-###2.4 Style Guide
+###2.4 Style Guide <a id="2.4"></a>
 A standalong style guide needs to be established. 
 Elvis (https://github.com/inaka/elvis) is used for verifying 
 and for now the style guide is the rules in [elvis.config](./elvis.config).
