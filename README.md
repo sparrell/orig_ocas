@@ -8,26 +8,26 @@ ocas
       + [2.2 Code of Conduct](#2.2)
       + [2.3 Collective Code Construction Contract (C4)](#2.3)
       + [2.4 Style Guide](#2.4)
-   * [2. Getting it running](#)
-      + [3.1 Build](#)
-      + [3.2 Build & Test](#)
-      + [3.3 Pull Requests](#)
-      + [3.4 Release](#)
-   * [4. Vision](#)
-      + [4.1 Single-command Verification](#)
-      + [4.2 Single-command Orchestrator/Actuator Consumer Simulator](#)
-      + [4.3 Playbook Simulator](#)
-      + [4.4 Implementation Template](#)
-   * [5. Organization of this software](#)
-      + [5.1 status_handler](#)
-      + [5.2 status_ok_handler](#)
-      + [5.3 openc2_handler](#)
-      + [5.4 Actions](#)
-      + [5.5 More on software design](#)
-   * [6. Development Status](#)
-   * [7. Specification Coverage](#)
-   * [8. Examples](#)
-   * [9. Want to help?](#)
+   * [3. Getting it running](#3)
+      + [3.1 Build](#3.1)
+      + [3.2 Build & Test](#3.2)
+      + [3.3 Pull Requests](#3.3)
+      + [3.4 Release](#3.4)
+   * [4. Vision](#4)
+      + [4.1 Single-command Verification](#4.1)
+      + [4.2 Single-command Orchestrator/Actuator Consumer Simulator](#4.2)
+      + [4.3 Playbook Simulator](#4.3)
+      + [4.4 Implementation Template](#4.4)
+   * [5. Organization of this software](#5)
+      + [5.1 status_handler](#5.1)
+      + [5.2 status_ok_handler](#5.2)
+      + [5.3 openc2_handler](#5.3)
+      + [5.4 Actions](#5.4)
+      + [5.5 More on software design](#5.5)
+   * [6. Development Status](#6)
+   * [7. Specification Coverage](#7)
+   * [8. Examples](#8)
+   * [9. Want to help?](#9)
 
 
 ##1. Intro <a id="intro"></a>
@@ -87,12 +87,12 @@ A standalong style guide needs to be established.
 Elvis (https://github.com/inaka/elvis) is used for verifying 
 and for now the style guide is the rules in [elvis.config](./elvis.config).
 
-##3. Getting it running
-###3.1 Build
+##3. Getting it running <a id="3"></a>
+###3.1 Build <a id="3.1"></a>
 
     $ rebar3 compile
 
-###3.2 Build & Test
+###3.2 Build & Test <a id="3.2"></a>
 To run complete set of test suites:
 
     $ rebar3 ct
@@ -101,14 +101,14 @@ To run an individual test suite:
 
     $ rebar3 ct --suite=test/query_SUITE
 
-###3.3 Pull Requests
+###3.3 Pull Requests <a id="3.3"></a>
 As part of the quality checks on merging, github pull requests automagically run gadgetci which:
 - validates the code compiles error free
 - runs elvis
 - runs xref
 - runs dialyzer
 
-###3.4 Release
+###3.4 Release <a id="3.4"></a>
 not done yet.
 For now, you can 
 
@@ -116,14 +116,14 @@ For now, you can
 
 to build and run from command line
 
-##4. Vision
+##4. Vision <a id="4"></a>
 The vision is to have 
 this code running on a cloud server, 
 with a protected interface, 
 that could be used for interworking testing. 
 See TBD for the glue to do this.
 
-###4.1 Single-command Verification
+###4.1 Single-command Verification <a id="4.1"></a>
 A primary purpose (and first use) of the simulator is to uncover bugaboos in the openC2 specification. 
 One such has already been uncovered (the mixed case issue). 
 The openC2 specification is an attempt to simplify and standardize the command and control of all aspects of security. 
@@ -137,7 +137,7 @@ The software is being architected to both allow for easily scaling to a full net
 But the generic consumer only accepts a single command (ie does not have state information about the system being simulated) 
 and only verifies the command is 'valid from a language viewpoint'.
 
-###4.2 Single-command Orchestrator/Actuator Consumer Simulator
+###4.2 Single-command Orchestrator/Actuator Consumer Simulator <a id="4.2"></a>
 The next phase of development (still future at this writing) will include state information for 
 instantiating either an orchestrator-consumer (eg as seen from another orchestrator)
 or an actuator-consumer (eg as seen from an orchestor).
@@ -145,18 +145,18 @@ The state information 'informs' the simulator as to the 'context' of the environ
 One use of this is still for specification validation for error conditions such as requesting resources that are not present.
 
 
-###4.3 Playbook Simulator
+###4.3 Playbook Simulator <a id="4.3"></a>
 Once the single-command simulator is fully functional, it will be extended to multi-command to allow playbook simulation of a full network. 
 This will involve retaining state information which will be then extended 
 to allow multiple orchestrators and the study of race conditions and temporal vulnerabilities.
 
-###4.4 Implementation Template
+###4.4 Implementation Template <a id="4.4"></a>
 Another vision is for this code be forked and 'filled in' as actual working implementations.
 The software has been architected to serve as a base for production security software as either an orchestrator or an actuator.
 See TBD for one example.
 
 
-##5. Organization of this software
+##5. Organization of this software <a id="5"></a>
 
 The directory structure is follows the erlang OTP convention. Of interest:
 - ./rebar.config contains the dependencies for building
@@ -185,17 +185,17 @@ which map url’s to the handler callbacks to run:
 - /openc2 will run openc2_handler callbacks
    * receives the openc2 json, validates it, and executes what is in the openc2 command in the simulator
 
-###5.1 status_handler 
+###5.1 status_handler  <a id="5.1"></a>
 This is a future feature to allow those with administrative access
 to get status information about the simulator itself 
 (as opposed to about the network being simulated which would use openC2 commands). 
 At the current point this api takes no parameters 
 and returns the html for “Status Works - needs more later”.
 
-###5.2 status_ok_handler
+###5.2 status_ok_handler <a id="5.2"></a>
 This api returns a simple “ok” in either text, html, or json. This is to serve as a keepalive if one is needed.
 
-###5.3 openc2_handler
+###5.3 openc2_handler <a id="5.3"></a>
 This module is the heart of the simulator. 
 When the url path = /openc2 then the openc2_handler is used. 
 Right now, only the verbose version of json is accepted. 
@@ -252,7 +252,7 @@ and each action allows the simulator to scale both the scope (processes)
 and the context (messaging) of the network being simulated 
 in addition to the modularizing the software that was mentioned earlier.
 
-###5.4 Actions
+###5.4 Actions <a id="5.4"></a>
 The module actions.erl contains spawn_action/3
 which both verifies the request’s json action is valid, 
 and it spawns the process for that action. The spawned process 
@@ -264,23 +264,23 @@ but not target/actuator/modifiers that are semantically correct for that action.
 For each of the actions
 the processes are actually spun up (albeit they only do a simple keepalive).
 
-###5.5 More on software design
+###5.5 More on software design <a id="5.5"></a>
 See [README.md in apps/ocas/src](./apps/ocas/src/README.md) for more on the software design
 including a sunny day walk thru the modules/functions.
 
-##6. Development Status
+##6. Development Status <a id="6"></a>
 Development status will attempt to be explained using test status.
 Tests that pass show functioning code.
 Work to be done is shown thru tests that are incomplete, non-existent, or failing.
 See [devstatus.md](./devstatus.md) for current status
 
-##7. Specification Coverage
+##7. Specification Coverage <a id="7"></a>
 Another way to consider status is how much of the specification is covered by what has so far been 
 implemented. See [specstatus.md](specstatus.md) for current status of this.
 
-##8. Examples
+##8. Examples <a id="8"></a>
 
 put stuff here
 
-##9. Want to help?
+##9. Want to help? <a id="9"></a>
 Find a bug? or something missing? or something dumb? Want to complete more features? If yes to any of these then create an issue. Or ideally send a pull request with the changes you'd like.
