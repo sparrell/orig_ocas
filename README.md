@@ -1,7 +1,11 @@
 ocas
 =====
 
-##1. Intro
+## Table of Contents
+   * [1. Intro](#intro)
+   * [2. Ground Rules](#ground)
+
+##1. Intro <a id="intro"></a>
 
 ocas - plural of oca, a edible tuber of Oxalis Tuberosa, a wood sorrel of the Andes; 
 or maybe it's an acronym OCAS - OpenC2 API Simulator.
@@ -11,7 +15,7 @@ Ocas is an OTP application written in erlang to:
 - be a viable simulator for testing OpenC2 code and scenarios
 - be a template for developing actual openc2 applications (ie replace the simulator code with code to actually perform the real function)
 
-##2. Ground Rules
+##2. Ground Rules <a id="ground"></a>
 ###2.1 License
 Copyright 2016 sFractal Consulting
 
