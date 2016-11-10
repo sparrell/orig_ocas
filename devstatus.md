@@ -21,29 +21,34 @@ Status is:
 - P - test media-type-not-json correctly processed (rejected with 415 return)
 - P - test bad json correctly processed (rejected with 400 return)
 
+This is 100% coverage of this aspect.
+
 ## 2. Simple single command validator
 
 ### 2.1 Action Sanity
 - P - test action=nonsense correctly processed (rejected with 400 return)
    * note this is not exhautive test of all invalid actions
 - P - test all 35 actions 'simply' processed (ie not Response and Alert)
-- N - test Response and Alert (not really actions like others)
+
+This is 100% coverage of this aspect.
 
 ### 2.2 Target Sanity
 - P - test target=hostname simply processed
 - P - test target=ipv4 simply processed
 - P - test target=network connection simply processed
 - P - test target=network firewall simply processed
-- N - test rest of targets simply processed
+- N - test rest of 24 targets simply processed
 
-This is TBD% coverage of this aspect.
+This is 16% coverage of this aspect.
 
 ### 2.3 Actuator Sanity
 - P - test actuator=network-firewall simply processed
 - P - test actuator=network-router simply processed
 - P - test actuator=network-scanner simply processed
 - P - test works correctly when no actuator (ie demense simply processed)
-- N - test rest of actuators simply processed
+- N - test rest of 39 actuators simply processed
+
+This is 9% coverage of this aspect.
 
 ### 2.4 Modifier Sanity
 - N - test modifier = ? simply processed
