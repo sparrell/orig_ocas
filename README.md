@@ -40,6 +40,12 @@ Ocas is an OTP application written in erlang to:
 - be a viable simulator for testing OpenC2 code and scenarios
 - be a template for developing actual openc2 applications (ie replace the simulator code with code to actually perform the real function)
 
+Ocas is being developed in erlang because:
+- Concurrent, parallel, cloud computing
+- Five 9’s or greater of reliability
+- Erlang facilitates using the actor model and message passing for simulation (ie scales well for complex network simulations)
+
+
 ##2. Ground Rules <a id="ground"></a>
 ###2.1 License <a id="2.1"></a>
 Copyright 2016 sFractal Consulting
