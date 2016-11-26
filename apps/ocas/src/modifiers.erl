@@ -99,7 +99,7 @@ process_modifier( <<"response">>, Value, _Req, State) ->
     lager:debug("ModifierKeepAlive: ~p ", [Server]),
 
     State4 = maps:put(response_keepalive, Server, State3),
-    
+
     %% return state and go try another modifier
     State4;
 
@@ -114,7 +114,7 @@ process_modifier( <<"where">>, Value, _Req, State) ->
     lager:debug("ModifierKeepAlive: ~p ", [Server]),
 
     State4 = maps:put(where_keepalive, Server, State3),
-    
+
     %% return state and go try another modifier
     State4;
 
@@ -129,7 +129,7 @@ process_modifier( <<"id">>, Value, _Req, State) ->
     lager:debug("ModifierKeepAlive: ~p ", [Server]),
 
     State4 = maps:put(id_keepalive, Server, State3),
-    
+
     %% return state and go try another modifier
     State4;
 
@@ -144,7 +144,7 @@ process_modifier( <<"delay">>, Value, _Req, State) ->
     lager:debug("ModifierKeepAlive: ~p ", [Server]),
 
     State4 = maps:put(delay_keepalive, Server, State3),
-    
+
     %% return state and go try another modifier
     State4;
 
@@ -159,7 +159,7 @@ process_modifier( <<"duration">>, Value, _Req, State) ->
     lager:debug("ModifierKeepAlive: ~p ", [Server]),
 
     State4 = maps:put(duration_keepalive, Server, State3),
-    
+
     %% return state and go try another modifier
     State4;
 
@@ -174,7 +174,7 @@ process_modifier( <<"date_time">>, Value, _Req, State) ->
     lager:debug("ModifierKeepAlive: ~p ", [Server]),
 
     State4 = maps:put(date_time_keepalive, Server, State3),
-    
+
     %% return state and go try another modifier
     State4;
 

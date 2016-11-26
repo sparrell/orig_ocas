@@ -126,7 +126,7 @@ handle_target_type(<<"cybox:device">>, TargetJson, Req, State ) ->
 
     %% handle which device it is
     handle_device( Specifiers , Req, State2);
-    
+
 handle_target_type(<<"command">>, TargetJson, Req, State ) ->
     lager:debug("need to put stuff here"),
     lager:debug("handle_target_type:command ~p", [TargetJson] ),
