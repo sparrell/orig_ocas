@@ -1,4 +1,4 @@
--module(acu_network_scanner).
+-module(mod_duration).
 %%%-------------------------------------------------------------------
 %%% @author Duncan Sparrell
 %%% @copyright (C) 2016, sFractal Consulting LLC
@@ -74,7 +74,7 @@ init( [State] ) ->
 handle_call( keepalive, From, State ) ->
     lager:debug( "~p got keepalive from ~p", [?MODULE, From] ),
     %% reply to keepalive
-    Response = {keepalive_received, acu_network_scanner_server},
+    Response = {keepalive_received, mod_duration_server},
     {reply, Response, State};
 
 %% handle unknown call messages

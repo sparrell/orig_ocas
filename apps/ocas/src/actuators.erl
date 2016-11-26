@@ -232,8 +232,11 @@ verify_keepalive( {keepalive_received, Server}
     State2 = maps:put(actuator_keepalive, true, State),
     State3 = maps:put(actuator_server, Server, State2),
 
-    %% tail recurse to sending response
-    send_response:send_response(Req, State3);
+    %% tail recurse to handling modifiers
+    %%   after gettin whether there are any modifiers
+    HasModifers = maps:get(has_modifiers, State3),
+    modifiers:get_modifiers( HasModifers, Req, State3);
+
 
 verify_keepalive( UnexpectedKeepalive
                 , Req

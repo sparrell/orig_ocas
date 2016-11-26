@@ -74,7 +74,7 @@ init( [State] ) ->
 handle_call( keepalive, From, State ) ->
     lager:debug( "~p got keepalive from ~p", [?MODULE, From] ),
     %% reply to keepalive
-    Response = {keepalive_received, net_con_server},
+    Response = {keepalive_received, tgt_ipv6_address_server},
     {reply, Response, State};
 
 %% handle unknown call messages

@@ -124,13 +124,9 @@ handle_target_type(<<"cybox:device">>, TargetJson, Req, State ) ->
     Specifiers = maps:get(<<"specifiers">>, TargetJson),
     lager:info("target specifiers: ~p", [Specifiers] ),
 
-    %% will be different types of devices but for now network-firewall
-    lager:debug("need to add other device types"),
-
-    %% spinup a server for this address
-    %%   when get beyond one command, need to check first if already exists
-    spawn_target( {network_firewall, nonspecific} , Req, State2 );
-
+    %% handle which device it is
+    handle_device( Specifiers , Req, State2);
+    
 handle_target_type(<<"command">>, TargetJson, Req, State ) ->
     lager:debug("need to put stuff here"),
     lager:debug("handle_target_type:command ~p", [TargetJson] ),
@@ -142,6 +138,26 @@ handle_target_type(TargetType, _TargetJson, Req, State ) ->
     {ok, Req2} = cowboy_req:reply( 400
                                  , []
                                  , <<"Don't know Target Type">>
+                                 , Req
+                                 ),
+
+    %% don't continue on, return because of unexpected response
+    {ok, Req2, State}.
+
+handle_device( <<"network_firewall">>, Req, State) ->
+    %%   when get beyond one command, need to check first if already exists
+    spawn_target( {network_firewall, nonspecific} , Req, State );
+
+handle_device( <<"network_scanner">>, Req, State) ->
+    %%   when get beyond one command, need to check first if already exists
+    spawn_target( {network_scanner, nonspecific} , Req, State );
+
+handle_device( UnknownDevice, Req, State) ->
+    %% ? dont know that Device
+    lager:info("~p Don't know this Target cybox Device", [UnknownDevice] ),
+    {ok, Req2} = cowboy_req:reply( 400
+                                 , []
+                                 , <<"Don't know cybox device">>
                                  , Req
                                  ),
 
@@ -226,7 +242,7 @@ spawn_target( {network_firewall, NetworkFirewall}, Req, State ) ->
     State2 = maps:put(target, network_firewall, State),
     State3 = maps:put(network_firewall, NetworkFirewall, State2),
     %% start gen_server for that target
-    {ok, Pid} = tgt_network_firewall:start(State),
+    {ok, Pid} = tgt_network_firewall:start(State3),
     State4 = maps:put(target_pid, Pid, State3),
 
     %% check with keep alive
@@ -235,6 +251,24 @@ spawn_target( {network_firewall, NetworkFirewall}, Req, State ) ->
 
     %% tail end recurse
     target_valid( {network_firewall, NetworkFirewall}
+                , TargetKeepAlive
+                , Req
+                , State4
+                );
+
+spawn_target( {network_scanner, NetworkScanner}, Req, State ) ->
+    State2 = maps:put(target, network_scanner, State),
+    State3 = maps:put(network_scanner, NetworkScanner, State2),
+    %% start gen_server for that target
+    {ok, Pid} = tgt_network_scanner:start(State3),
+    State4 = maps:put(target_pid, Pid, State3),
+
+    %% check with keep alive
+    TargetKeepAlive = tgt_network_scanner:keepalive(),
+    lager:debug("TargetKeepAlive: ~p ", [TargetKeepAlive]),
+
+    %% tail end recurse
+    target_valid( {network_scanner, NetworkScanner}
                 , TargetKeepAlive
                 , Req
                 , State4

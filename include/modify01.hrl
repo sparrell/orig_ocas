@@ -8,7 +8,7 @@
 \"action\": \"modify\",
 \"target\": { 
     \"type\": \"cybox:device\",
-    \"specifiers\": \"network-firewall\"
+    \"specifiers\": \"network_firewall\"
     },
 \"actuator\": {
     \"type\": \"network-firewall\",
