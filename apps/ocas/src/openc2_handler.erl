@@ -50,7 +50,9 @@ rest_init(Req, _Opts) ->
     {Method, Req1} = cowboy_req:method(Req),
     {URL, Req2} = cowboy_req:url(Req1),
     lager:info("rest_init:~s ~s", [Method, URL]),
-    {ok, Req2, #{}}.
+    %% initialize State with an empty pid map
+    State = #{ pids => #{} },
+    {ok, Req2, State}.
 
 allowed_methods(Req, State) ->
     lager:info("got to allowed methods"),

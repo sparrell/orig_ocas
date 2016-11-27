@@ -92,7 +92,7 @@ process_modifier( <<"response">>, Value, _Req, State) ->
     State2 = maps:put(response, Value, State),
     %% start gen_server for modifier
     {ok, Pid} = mod_ack:start(State),
-    State3 = maps:put(response_pid, Pid, State2),
+    State3 = tools:add_pid(mod_response_pid, Pid, State2),
 
     %% check with keep alive
     { keepalive_received, Server } = mod_ack:keepalive(),
@@ -107,7 +107,7 @@ process_modifier( <<"where">>, Value, _Req, State) ->
     State2 = maps:put(where, Value, State),
     %% start gen_server for modifier
     {ok, Pid} = mod_where:start(State),
-    State3 = maps:put(where_pid, Pid, State2),
+    State3 = tools:add_pid(mod_where_pid, Pid, State2),
 
     %% check with keep alive
     { keepalive_received, Server } = mod_where:keepalive(),
@@ -122,7 +122,7 @@ process_modifier( <<"id">>, Value, _Req, State) ->
     State2 = maps:put(id, Value, State),
     %% start gen_server for modifier
     {ok, Pid} = mod_id:start(State),
-    State3 = maps:put(id_pid, Pid, State2),
+    State3 = tools:add_pid(mod_id_pid, Pid, State2),
 
     %% check with keep alive
     { keepalive_received, Server } = mod_id:keepalive(),
@@ -137,7 +137,7 @@ process_modifier( <<"delay">>, Value, _Req, State) ->
     State2 = maps:put(delay, Value, State),
     %% start gen_server for modifier
     {ok, Pid} = mod_delay:start(State),
-    State3 = maps:put(delay_pid, Pid, State2),
+    State3 = tools:add_pid(mod_delay_pid, Pid, State2),
 
     %% check with keep alive
     { keepalive_received, Server } = mod_delay:keepalive(),
@@ -152,7 +152,7 @@ process_modifier( <<"duration">>, Value, _Req, State) ->
     State2 = maps:put(duration, Value, State),
     %% start gen_server for modifier
     {ok, Pid} = mod_duration:start(State),
-    State3 = maps:put(duration_pid, Pid, State2),
+    State3 = tools:add_pid(mod_duration_pid, Pid, State2),
 
     %% check with keep alive
     { keepalive_received, Server } = mod_duration:keepalive(),
@@ -167,7 +167,7 @@ process_modifier( <<"date_time">>, Value, _Req, State) ->
     State2 = maps:put(date_time, Value, State),
     %% start gen_server for modifier
     {ok, Pid} = mod_date_time:start(State),
-    State3 = maps:put(date_time_pid, Pid, State2),
+    State3 = tools:add_pid(mod_date_time_pid, Pid, State2),
 
     %% check with keep alive
     { keepalive_received, Server } = mod_date_time:keepalive(),

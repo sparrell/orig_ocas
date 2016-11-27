@@ -201,7 +201,7 @@ spawn_target( {hostname, HostName}, Req, State ) ->
     State3 = maps:put(hostname, HostName, State2),
     %% start gen_server for that target
     {ok, Pid} = tgt_hostname:start(State),
-    State4 = maps:put(target_pid, Pid, State3),
+    State4 = tools:add_pid(tgt_hostname_pid, Pid, State3),
 
     %% check with keep alive
     TargetKeepAlive = tgt_hostname:keepalive(),
@@ -215,7 +215,7 @@ spawn_target( {ipv4_address, Ipv4Address}, Req, State ) ->
     State3 = maps:put(ipv4_address, Ipv4Address, State2),
     %% start gen_server for that target
     {ok, Pid} = tgt_ipv4_address:start(State),
-    State4 = maps:put(target_pid, Pid, State3),
+    State4 = tools:add_pid(tgt_ipv4_pid, Pid, State3),
 
     %% check with keep alive
     TargetKeepAlive = tgt_ipv4_address:keepalive(),
@@ -229,7 +229,7 @@ spawn_target( {ipv6_address, Ipv6Address}, Req, State ) ->
     State3 = maps:put(ipv6_address, Ipv6Address, State2),
     %% start gen_server for that target
     {ok, Pid} = tgt_ipv6_address:start(State),
-    State4 = maps:put(target_pid, Pid, State3),
+    State4 = tools:add_pid(tgt_ipv6_pid, Pid, State3),
 
     %% check with keep alive
     TargetKeepAlive = tgt_ipv6_address:keepalive(),
@@ -243,7 +243,7 @@ spawn_target( {network_firewall, NetworkFirewall}, Req, State ) ->
     State3 = maps:put(network_firewall, NetworkFirewall, State2),
     %% start gen_server for that target
     {ok, Pid} = tgt_network_firewall:start(State3),
-    State4 = maps:put(target_pid, Pid, State3),
+    State4 = tools:add_pid(tgt_nfw_pid, Pid, State3),
 
     %% check with keep alive
     TargetKeepAlive = tgt_network_firewall:keepalive(),
@@ -261,7 +261,7 @@ spawn_target( {network_scanner, NetworkScanner}, Req, State ) ->
     State3 = maps:put(network_scanner, NetworkScanner, State2),
     %% start gen_server for that target
     {ok, Pid} = tgt_network_scanner:start(State3),
-    State4 = maps:put(target_pid, Pid, State3),
+    State4 = tools:add_pid(tgt_scanner_pid, Pid, State3),
 
     %% check with keep alive
     TargetKeepAlive = tgt_network_scanner:keepalive(),

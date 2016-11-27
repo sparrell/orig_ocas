@@ -36,11 +36,40 @@
 %%% OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %%%-------------------------------------------------------------------
 
--export([unpid/3]).
+-export([transform_state/1, add_pid/3]).
+
+transform_state( OldMap ) ->
+    %% clean up state for json-ifying
+    %% one clean up is to text-ify any pids as values of primary keys
+    %% other clean up is for key=pids, turn all pids in that map to text
+    Keys = maps:keys(OldMap),
+    NewMap = #{},
+    unpid( Keys, OldMap, NewMap).
+
+add_pid(PidName, Pid, State) ->
+    %% add PidName=>Pid to State in map at pids key
+    OldPidMap = maps:get(pids, State),
+    NewPidMap = maps:put(PidName, Pid, OldPidMap),
+    NewState = maps:put(pids, NewPidMap, State),
+    NewState.
+    
+
+%% Private functions
 
 unpid([], _OldMap, NewMap) ->
     %% done since no keys left. Return Map
     NewMap;
+
+unpid( [ pids | RestOfKeys ], OldMap, NewMap ) ->
+    %% if key=pids, then value=map of pids that needs cleaning up
+    OldPidMap = maps:get(pids, OldMap),
+    NewPidMap = transform_state( OldPidMap ),
+
+    %% put NewPidMap in NewMap
+    UpdatedMap = maps:put(pids, NewPidMap, NewMap),
+
+    %% recurse thru rest of keys
+    unpid( RestOfKeys, OldMap, UpdatedMap );
 
 unpid( [ Key | RestOfKeys ], OldMap, NewMap ) ->
     %% get value to go with the key
@@ -64,3 +93,4 @@ transform_value(Value) ->
         false ->
             Value
     end.
+

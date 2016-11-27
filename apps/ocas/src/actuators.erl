@@ -139,7 +139,7 @@ spawn_actuator( {demense, all}, Req, State ) ->
     State2 = maps:put(actuator, demense, State),
     %% start gen_server for that actuator
     {ok, Pid} = acu_demense:start(State),
-    State3 = maps:put(actuator_pid, Pid, State2),
+    State3 = tools:add_pid(acu_demense_pid, Pid, State2),
 
     %% check with keep alive
     ActuatorKeepAlive = acu_demense:keepalive(),
@@ -157,7 +157,7 @@ spawn_actuator( {network_firewall, NetworkFirewall}, Req, State ) ->
     State3 = maps:put(network_firewall, NetworkFirewall, State2),
     %% start gen_server for that actuator
     {ok, Pid} = acu_network_firewall:start(State),
-    State4 = maps:put(actuator_pid, Pid, State3),
+    State4 = tools:add_pid(acu_nfw_pid, Pid, State3),
 
     %% check with keep alive
     ActuatorKeepAlive = acu_network_firewall:keepalive(),
@@ -175,7 +175,7 @@ spawn_actuator( {network_router, NetworkRouter}, Req, State ) ->
     State3 = maps:put(network_router, NetworkRouter, State2),
     %% start gen_server for that actuator
     {ok, Pid} = acu_network_router:start(State),
-    State4 = maps:put(actuator_pid, Pid, State3),
+    State4 = tools:add_pid(acu_rtr_pid, Pid, State3),
 
     %% check with keep alive
     ActuatorKeepAlive = acu_network_router:keepalive(),
@@ -193,7 +193,7 @@ spawn_actuator( {network_scanner, NetworkScanner}, Req, State ) ->
     State3 = maps:put(network_scanner, NetworkScanner, State2),
     %% start gen_server for that actuator
     {ok, Pid} = acu_network_scanner:start(State),
-    State4 = maps:put(actuator_pid, Pid, State3),
+    State4 = tools:add_pid(acu_scanner_pid, Pid, State3),
 
     %% check with keep alive
     ActuatorKeepAlive = acu_network_scanner:keepalive(),

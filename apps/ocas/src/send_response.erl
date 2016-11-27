@@ -36,45 +36,17 @@
 -author("Duncan Sparrell").
 -license("Apache 2.0").
 
--export([ send_response/2
-        , unpid/3
-        ]).
+-export([ send_response/2 ]).
 
 send_response(Req, State) ->
 
     %% for now just reply with some of State as json
-    Keys = maps:keys(State),
-    TransformedState = unpid( Keys, State, #{} ),
+    TransformedState = tools:transform_state(State),
     lager:debug("TransformedState ~p", [TransformedState]),
     ReplyBody = jsx:encode( TransformedState ),
 
     Headers = [ {<<"content-type">>, <<"application/json">>} ],
     {ok, Req2} = cowboy_req:reply(200, Headers, ReplyBody, Req),
-    {ok, Req2, State}.
 
-unpid([], _OldMap, NewMap) ->
-    %% done since no keys left. Return Map
-    NewMap;
-
-unpid( [ Key | RestOfKeys ], OldMap, NewMap ) ->
-    %% get value to go with the key
-    Value = maps:get(Key, OldMap),
-    %% transform if it's not jsonifyable
-    NewValue = transform_value(Value),
-
-    %% put in the new map
-    UpdatedMap = maps:put(Key, NewValue, NewMap),
-
-    %% recurse thru rest of keys
-    unpid( RestOfKeys, OldMap, UpdatedMap ).
-
-transform_value(Value) ->
-    %% return transformed value if value is a pid,
-    %%        otherwise leave alone
-    case is_pid(Value) of
-        true ->
-            %% is a pid, so return text rep instead
-            list_to_binary( io_lib:format("~p", [Value]) );
-        false ->
-            Value
-    end.
+    %% stopping this requests process since finished in above
+    {halt, Req2, State}.

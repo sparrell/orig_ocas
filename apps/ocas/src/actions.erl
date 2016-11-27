@@ -437,7 +437,7 @@ action_valid(Action, Pid, ActionKeepAlive, Req, State) ->
     %% action was valid so update State
     State2 = maps:put(action_valid, true, State),
     State3 = maps:put(action, Action, State2),
-    State4 = maps:put(action_pid, Pid, State3),
+    State4 = tools:add_pid(action_pid, Pid, State3),
 
     %% tail end recurse to verifying keepalive
     verify_keepalive( ActionKeepAlive, Req, State4).
